@@ -1,15 +1,32 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyProject.Models
 {
     public class Propuesta
     {
+        [Key]
         public int Id { get; set; }
-        public required int IdSolicitud { get; set; }
-        public required Solicitud Solicitud { get; set; }
-        public required int IdEscuela { get; set; }
-        public required Escuela Escuela { get; set; }
+
+        [Required]
+        public int IdSolicitud { get; set; }
+
+        [Required]
+        public int IdEscuela { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public required string Status { get; set; }
-        public required DateTime Fecha { get; set; }
+
+        [Required]
+        public DateTime Fecha { get; set; }
+
+        [ForeignKey("IdSolicitud")]
+        public required Solicitud Solicitud { get; set; }
+
+        [ForeignKey("IdEscuela")]
+        public required Escuela Escuela { get; set; }
+
+        public ICollection<PropuestaMateria> PropuestaMaterias { get; set; } = new List<PropuestaMateria>();
     }
 }
