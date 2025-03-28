@@ -19,8 +19,15 @@ namespace MyProject.Models
         [Required]
         public required string Password { get; set; }
 
+        [StringLength(500)]
+        public string? ResetPasswordToken { get; set; }
+
+        public DateTime? ResetPasswordTokenExpiration { get; set; }
+
         public Administrador? Administrador { get; set; }
+
         public Estudiante? Estudiante { get; set; }
+
         public ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
     }
 }
