@@ -1,8 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using MyProject.Data;
 using Microsoft.OpenApi.Models;
+using MyProject.Repositories.Interfaces;
+using GestionAcademicaAPI.Data;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Cargar variables de entorno desde el archivo .env
+Env.Load();
 
 // Agregar controladores al contenedor de servicios (para Web API)
 builder.Services.AddControllers();
@@ -22,12 +28,19 @@ builder.Services.AddSwaggerGen(c =>
             Email = "escom_upis@ipn.mx"
         }
     });
+
+    // Habilitar la generación de comentarios XML para los modelos
+    var xmlFile = Path.Combine(Directory.GetCurrentDirectory(), "GestionAcademica.xml");
+    c.IncludeXmlComments(xmlFile);
 });
 
 // Agregar servicios al contenedor.
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
+
+// Registrar los repositorios
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 // Configurar CORS si es necesario
 builder.Services.AddCors(options =>

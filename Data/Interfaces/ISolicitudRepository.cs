@@ -3,6 +3,9 @@ using System.Linq.Expressions;
 
 namespace GestionAcademicaAPI.Data.Interfaces
 {
+    /// <summary>
+    /// Interface para el repositorio de solicitudes
+    /// </summary>
     public interface ISolicitudRepository
     {
         /// <summary>

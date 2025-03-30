@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MyProject.Models;
+﻿using MyProject.Models;
 
 namespace MyProject.Repositories.Interfaces
 {
@@ -10,14 +7,36 @@ namespace MyProject.Repositories.Interfaces
     /// </summary>
     public enum TipoCorreoElectronico
     {
-        Bienvenida,
+        /// <summary>
+        /// Restablecimiento de contraseña
+        /// </summary>
         RestablecimientoContraseña,
+
+        /// <summary>
+        /// Bienvenida
+        /// </summary>
+        Bienvenida,
+
+        /// <summary>
+        /// Confirmación de registro
+        /// </summary>
         ConfirmacionRegistro,
+
+        /// <summary>
+        /// Cambio de contraseña
+        /// </summary>
         CambioContraseña,
+
+        /// <summary>
+        /// Notificación de actividad
+        /// </summary>
         NotificacionActividad
     }
 
-    public interface IRepositorioUsuario
+    /// <summary>
+    /// Interfaz para el repositorio de usuarios
+    /// </summary>
+    public interface IUsuarioRepository
     {
         /// <summary>
         /// Obtiene un usuario por su identificador único
@@ -94,6 +113,10 @@ namespace MyProject.Repositories.Interfaces
         /// <summary>
         /// Registra un intento de envío de correo electrónico
         /// </summary>
+        /// <param name="usuario">Usuario destinatario</param>
+        /// <param name="tipoCorreo">Tipo de correo enviado</param>
+        /// <param name="resultado">Resultado del envío</param>
+        /// <param name="detallesError">Detalles del error en caso de fallo</param>
         Task<bool> RegistrarIntentoCorreoAsync(
             Usuario usuario,
             TipoCorreoElectronico tipoCorreo,
@@ -104,6 +127,7 @@ namespace MyProject.Repositories.Interfaces
         /// <summary>
         /// Genera un token de restablecimiento de contraseña
         /// </summary>
+        /// <param name="correoElectronico">Correo electrónico del usuario</param>
         Task<string> GenerarTokenRestablecimientoAsync(string correoElectronico);
     }
 }

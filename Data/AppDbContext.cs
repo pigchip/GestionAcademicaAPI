@@ -1,25 +1,77 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GestionAcademicaAPI.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 using MyProject.Models;
 
 namespace MyProject.Data
 {
+    /// <summary>
+    /// Represents the database context for the application.
+    /// </summary>
     public class AppDbContext : DbContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppDbContext"/> class.
+        /// </summary>
+        /// <param name="options">The options to be used by a <see cref="DbContext"/>.</param>
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
-        // Definir las entidades que estarán mapeadas a las tablas de la base de datos
+        /// <summary>
+        /// Gets or sets the DbSet for the Usuario entity.
+        /// </summary>
         public DbSet<Usuario> Usuarios { get; set; }
+
+        /// <summary>
+        /// Gets or sets the DbSet for the Administrador entity.
+        /// </summary>
         public DbSet<Administrador> Administradores { get; set; }
+
+        /// <summary>
+        /// Gets or sets the DbSet for the Estudiante entity.
+        /// </summary>
         public DbSet<Estudiante> Estudiantes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the DbSet for the Escuela entity.
+        /// </summary>
         public DbSet<Escuela> Escuelas { get; set; }
+
+        /// <summary>
+        /// Gets or sets the DbSet for the Solicitud entity.
+        /// </summary>
         public DbSet<Solicitud> Solicitudes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the DbSet for the Materia entity.
+        /// </summary>
         public DbSet<Materia> Materias { get; set; }
+
+        /// <summary>
+        /// Gets or sets the DbSet for the Propuesta entity.
+        /// </summary>
         public DbSet<Propuesta> Propuestas { get; set; }
+
+        /// <summary>
+        /// Gets or sets the DbSet for the PropuestaMateria entity.
+        /// </summary>
         public DbSet<PropuestaMateria> PropuestaMaterias { get; set; }
+
+        /// <summary>
+        /// Gets or sets the DbSet for the Comentario entity.
+        /// </summary>
         public DbSet<Comentario> Comentarios { get; set; }
 
+        /// <summary>
+        /// Gets or sets the DbSet for the RegistroEnvioCorreo entity.
+        /// </summary>
+        public DbSet<RegistroEnvioCorreo> RegistroEnvioCorreos { get; set; }
+
+        /// <summary>
+        /// Configures the model that was discovered by convention from the entity types
+        /// exposed in <see cref="DbSet{TEntity}"/> properties on the derived context.
+        /// </summary>
+        /// <param name="modelBuilder">The builder being used to construct the model for this context.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -99,6 +151,12 @@ namespace MyProject.Data
                 .WithMany(m => m.PropuestaMaterias)
                 .HasForeignKey(pm => pm.IdMateria)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Configurar relación uno a muchos para RegistroEnvioCorreo
+            modelBuilder.Entity<Usuario>()
+                .HasMany(u => u.RegistroEnvioCorreos)
+                .WithOne(r => r.Usuario)
+                .HasForeignKey(r => r.IdUsuario);
         }
     }
 }

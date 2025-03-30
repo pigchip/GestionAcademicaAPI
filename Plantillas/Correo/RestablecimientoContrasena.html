@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer contraseña</title>
+    <style>
+        body {
+            color: black;
+        }
+
+        .token-container {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hola, {{nombreUsuario}}</h1>
+    <p>Hemos recibido una solicitud para restablecer tu contraseña. Utiliza el siguiente token para restablecerla:</p>
+
+    <div class="token-container">
+        <p><strong>{{token}}</strong></p>
+    </div>
+
+    <p>Si no solicitaste este cambio, ignora este correo.</p>
+    <p>Saludos,<br>El equipo de UPIS</p>
+</body>
+</html>
+

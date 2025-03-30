@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyProject.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GestionAcademicaAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250330072156_UserAuth")]
+    partial class UserAuth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,38 +24,6 @@ namespace GestionAcademicaAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("GestionAcademicaAPI.Models.Entities.RegistroEnvioCorreo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DetallesError")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("FechaEnvio")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("Resultado")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("TipoCorreo")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdUsuario");
-
-                    b.ToTable("RegistroEnvioCorreos");
-                });
 
             modelBuilder.Entity("MyProject.Models.Administrador", b =>
                 {
@@ -336,17 +307,6 @@ namespace GestionAcademicaAPI.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("GestionAcademicaAPI.Models.Entities.RegistroEnvioCorreo", b =>
-                {
-                    b.HasOne("MyProject.Models.Usuario", "Usuario")
-                        .WithMany("RegistroEnvioCorreos")
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
             modelBuilder.Entity("MyProject.Models.Administrador", b =>
                 {
                     b.HasOne("MyProject.Models.Usuario", "Usuario")
@@ -484,8 +444,6 @@ namespace GestionAcademicaAPI.Migrations
                     b.Navigation("Comentarios");
 
                     b.Navigation("Estudiante");
-
-                    b.Navigation("RegistroEnvioCorreos");
                 });
 #pragma warning restore 612, 618
         }
