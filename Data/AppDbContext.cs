@@ -1,6 +1,5 @@
-﻿using GestionAcademicaAPI.Models.Entities;
+﻿using GestionAcademicaAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using MyProject.Models;
 
 namespace MyProject.Data
 {

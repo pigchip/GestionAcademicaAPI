@@ -1,9 +1,9 @@
-﻿using GestionAcademicaAPI.Helpers;
+﻿using GestionAcademicaAPI.DTOs;
+using GestionAcademicaAPI.Helpers;
+using GestionAcademicaAPI.Models;
+using GestionAcademicaAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using MyProject.Models;
-using MyProject.Repositories.Interfaces;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace GestionAcademicaAPI.Controllers
 {
@@ -12,18 +12,55 @@ namespace GestionAcademicaAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class 
-        UsuarioController : ControllerBase
+    public class UsuarioController : ControllerBase
     {
-        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IUsuarioService _usuarioService;
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="UsuarioController"/>.
         /// </summary>
-        /// <param name="usuarioRepository">El repositorio de usuarios.</param>
-        public UsuarioController(IUsuarioRepository usuarioRepository)
+        /// <param name="usuarioService">El servicio de usuarios.</param>
+        public UsuarioController(IUsuarioService usuarioService)
         {
-            _usuarioRepository = usuarioRepository;
+            _usuarioService = usuarioService;
+        }
+
+        /// <summary>
+        /// Crea un nuevo usuario.
+        /// </summary>
+        /// <param name="request">La solicitud de creación de usuario.</param>
+        /// <returns>El usuario creado.</returns>
+        [HttpPost]
+        public async Task<ActionResult<Usuario>> CreateUser([FromBody] CrearUsuarioRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("La solicitud es nula.");
+            }
+
+            var usuarioDTO = new UsuarioDTO
+            {
+                Username = request.Username,
+                EmailPersonal = request.EmailPersonal,
+                Password = request.Password
+            };
+
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(usuarioDTO);
+            if (!Validator.TryValidateObject(usuarioDTO, validationContext, validationResults, true))
+            {
+                return BadRequest(validationResults);
+            }
+
+            try
+            {
+                var nuevoUsuario = await _usuarioService.RegistrarUsuarioAsync(usuarioDTO);
+                return CreatedAtAction(nameof(GetUserById), new { id = nuevoUsuario.Id }, nuevoUsuario);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
         /// <summary>
@@ -32,9 +69,9 @@ namespace GestionAcademicaAPI.Controllers
         /// <param name="id">El ID del usuario.</param>
         /// <returns>El usuario con el ID especificado.</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetUsuario(int id)
+        public async Task<ActionResult<Usuario>> GetUserById(int id)
         {
-            var usuario = await _usuarioRepository.ObtenerPorIdAsync(id);
+            var usuario = await _usuarioService.ObtenerUsuarioPorIdAsync(id);
             if (usuario == null)
             {
                 return NotFound($"Usuario con ID {id} no encontrado.");
@@ -49,9 +86,9 @@ namespace GestionAcademicaAPI.Controllers
         /// <param name="nombreUsuario">El nombre de usuario.</param>
         /// <returns>El usuario con el nombre de usuario especificado.</returns>
         [HttpGet("nombreUsuario/{nombreUsuario}")]
-        public async Task<ActionResult<Usuario>> GetUsuarioPorNombreUsuario(string nombreUsuario)
+        public async Task<ActionResult<Usuario>> GetUserByUsername(string nombreUsuario)
         {
-            var usuario = await _usuarioRepository.ObtenerPorNombreUsuarioAsync(nombreUsuario);
+            var usuario = await _usuarioService.ObtenerUsuarioPorNombreUsuarioAsync(nombreUsuario);
             if (usuario == null)
             {
                 return NotFound($"Usuario con nombre de usuario {nombreUsuario} no encontrado.");
@@ -61,53 +98,14 @@ namespace GestionAcademicaAPI.Controllers
         }
 
         /// <summary>
-        /// Crea un nuevo usuario.
+        /// Obtiene todos los usuarios.
         /// </summary>
-        /// <param name="request">La solicitud de creación de usuario.</param>
-        /// <returns>El usuario creado.</returns>
-        [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario([FromBody] CrearUsuarioRequest request)
+        /// <returns>Una lista de todos los usuarios.</returns>
+        [HttpGet("usuarios")]
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetAllUsers()
         {
-            if (request == null)
-            {
-                return BadRequest("La solicitud es nula.");
-            }
-
-            if (string.IsNullOrWhiteSpace(request.Username))
-            {
-                return BadRequest("El nombre de usuario es obligatorio.");
-            }
-
-            if (string.IsNullOrWhiteSpace(request.EmailPersonal))
-            {
-                return BadRequest("El correo electrónico personal es obligatorio.");
-            }
-
-            if (string.IsNullOrWhiteSpace(request.Password))
-            {
-                return BadRequest("La contraseña es obligatoria.");
-            }
-
-            if (await _usuarioRepository.ExisteNombreUsuarioAsync(request.Username))
-            {
-                return Conflict($"El nombre de usuario {request.Username} ya está en uso.");
-            }
-
-            if (await _usuarioRepository.ExisteCorreoElectronicoAsync(request.EmailPersonal))
-            {
-                return Conflict($"El correo electrónico {request.EmailPersonal} ya está registrado.");
-            }
-
-            var usuario = new Usuario
-            {
-                Username = request.Username,
-                EmailPersonal = request.EmailPersonal,
-                Password = request.Password
-            };
-
-            var nuevoUsuario = await _usuarioRepository.CrearAsync(usuario);
-
-            return CreatedAtAction(nameof(GetUsuario), new { id = nuevoUsuario.Id }, nuevoUsuario);
+            var usuarios = await _usuarioService.ObtenerTodosUsuariosAsync();
+            return Ok(usuarios);
         }
 
         /// <summary>
@@ -116,9 +114,9 @@ namespace GestionAcademicaAPI.Controllers
         /// <param name="id">El ID del usuario a eliminar.</param>
         /// <returns>Resultado de la operación de eliminación.</returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUsuario(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var resultado = await _usuarioRepository.EliminarAsync(id);
+            var resultado = await _usuarioService.EliminarUsuarioAsync(id);
             if (!resultado)
             {
                 return NotFound($"Usuario con ID {id} no encontrado.");
@@ -133,9 +131,9 @@ namespace GestionAcademicaAPI.Controllers
         /// <param name="request">La solicitud de autenticación.</param>
         /// <returns>El usuario autenticado.</returns>
         [HttpPost("autenticar")]
-        public async Task<ActionResult<Usuario>> Autenticar([FromBody] LoginRequest request)
+        public async Task<ActionResult<Usuario>> Authenticate([FromBody] LoginRequest request)
         {
-            var usuario = await _usuarioRepository.AutenticarAsync(request.Username, request.Password);
+            var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
             if (usuario == null)
             {
                 return Unauthorized("Nombre de usuario o contraseña incorrectos.");
@@ -150,9 +148,9 @@ namespace GestionAcademicaAPI.Controllers
         /// <param name="request">La solicitud de restablecimiento de contraseña.</param>
         /// <returns>Resultado de la operación de restablecimiento.</returns>
         [HttpPost("restablecerContraseña")]
-        public async Task<ActionResult> RestablecerContraseña([FromBody] RestablecimientoContraseñaRequest request)
+        public async Task<ActionResult> ResetPassword([FromBody] RestablecimientoContraseñaRequest request)
         {
-            var exito = await _usuarioRepository.RestablecerContraseñaAsync(request.CorreoElectronico, request.Token, request.NuevaContraseña);
+            var exito = await _usuarioService.RestablecerContraseñaAsync(request.CorreoElectronico, request.Token, request.NuevaContraseña);
             if (!exito)
             {
                 return BadRequest("Token inválido o ha expirado.");
@@ -167,9 +165,9 @@ namespace GestionAcademicaAPI.Controllers
         /// <param name="correoElectronico">El correo electrónico del usuario.</param>
         /// <returns>Resultado de la operación de inicio de restablecimiento.</returns>
         [HttpPost("iniciarRestablecimientoContraseña")]
-        public async Task<ActionResult> IniciarRestablecimientoContraseña(string correoElectronico)
+        public async Task<ActionResult> StartPasswordReset(string correoElectronico)
         {
-            var exito = await _usuarioRepository.IniciarProcesoRestablecimientoContraseñaAsync(correoElectronico);
+            var exito = await _usuarioService.IniciarRestablecimientoContraseñaAsync(correoElectronico);
             if (!exito)
             {
                 return NotFound("Correo electrónico no registrado.");
@@ -179,22 +177,12 @@ namespace GestionAcademicaAPI.Controllers
         }
 
         /// <summary>
-        /// Obtiene todos los usuarios.
-        /// </summary>
-        /// <returns>Una lista de todos los usuarios.</returns>
-        [HttpGet("usuarios")]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
-        {
-            var usuarios = await _usuarioRepository.ObtenerTodosAsync();
-            return Ok(usuarios);
-        }
-        /// <summary>
         /// Modifica los datos personales de un usuario autenticándolo primero.
         /// </summary>
         /// <param name="request">La solicitud de actualización de datos personales que incluye el nombre de usuario, contraseña y los nuevos datos personales.</param>
         /// <returns>El usuario actualizado.</returns>
         [HttpPut("cambiarDatosPersonales")]
-        public async Task<ActionResult<Usuario>> CambiarDatosPersonales([FromBody] CambiarDatosPersonalesRequest request)
+        public async Task<ActionResult<Usuario>> UpdatePersonalData([FromBody] CambiarDatosPersonalesRequest request)
         {
             if (request == null)
             {
@@ -202,16 +190,20 @@ namespace GestionAcademicaAPI.Controllers
             }
 
             // Autenticar al usuario
-            var usuario = await _usuarioRepository.AutenticarAsync(request.Username, request.Password);
+            var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
             if (usuario == null)
             {
                 return Unauthorized("Nombre de usuario o contraseña incorrectos.");
             }
 
-            // Cambiar los datos personales del usuario autenticado
-            usuario.EmailPersonal = request.EmailPersonal;
+            var usuarioDTO = new UsuarioDTO
+            {
+                Username = request.Username,
+                EmailPersonal = request.EmailPersonal,
+                Password = request.Password
+            };
 
-            var usuarioActualizado = await _usuarioRepository.ActualizarAsync(usuario);
+            var usuarioActualizado = await _usuarioService.ActualizarUsuarioAsync(usuario.Id, usuarioDTO);
             return Ok(usuarioActualizado);
         }
 
@@ -221,7 +213,7 @@ namespace GestionAcademicaAPI.Controllers
         /// <param name="request">La solicitud de cambio de contraseña que incluye el nombre de usuario, contraseña actual y la nueva contraseña.</param>
         /// <returns>Resultado de la operación de cambio de contraseña.</returns>
         [HttpPut("cambiarContraseña")]
-        public async Task<ActionResult> CambiarContraseña([FromBody] CambiarContraseñaRequest request)
+        public async Task<ActionResult> ChangePassword([FromBody] CambiarContraseñaRequest request)
         {
             if (request == null)
             {
@@ -229,33 +221,22 @@ namespace GestionAcademicaAPI.Controllers
             }
 
             // Autenticar al usuario
-            var usuario = await _usuarioRepository.AutenticarAsync(request.Username, request.Password);
+            var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
             if (usuario == null)
             {
                 return Unauthorized("Nombre de usuario o contraseña incorrectos.");
             }
 
-            // Cambiar la contraseña del usuario autenticado
-            usuario.Password = FunctionsHelper.HashPassword(request.NuevaContraseña);
+            var usuarioDTO = new UsuarioDTO
+            {
+                Username = request.Username,
+                EmailPersonal = usuario.EmailPersonal,
+                Password = request.NuevaContraseña
+            };
 
-            await _usuarioRepository.ActualizarAsync(usuario);
+            await _usuarioService.ActualizarUsuarioAsync(usuario.Id, usuarioDTO);
             return Ok("Contraseña cambiada correctamente.");
         }
-    }
-
-    /// <summary>
-    /// Representa una solicitud de inicio de sesión.
-    /// </summary>
-    public class LoginRequest
-    {
-        /// <summary>
-        /// El nombre de usuario.
-        /// </summary>
-        public string Username { get; set; } = string.Empty;
-        /// <summary>
-        /// La contraseña.
-        /// </summary>
-        public string Password { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -313,24 +294,5 @@ namespace GestionAcademicaAPI.Controllers
         /// La nueva contraseña.
         /// </summary>
         public string NuevaContraseña { get; set; } = string.Empty;
-    }
-
-    /// <summary>
-    /// Representa una solicitud para crear un nuevo usuario.
-    /// </summary>
-    public class CrearUsuarioRequest
-    {
-        /// <summary>
-        /// El nombre de usuario.
-        /// </summary>
-        public string Username { get; set; } = string.Empty;
-        /// <summary>
-        /// El correo electrónico personal.
-        /// </summary>
-        public string EmailPersonal { get; set; } = string.Empty;
-        /// <summary>
-        /// La contraseña.
-        /// </summary>
-        public string Password { get; set; } = string.Empty;
     }
 }

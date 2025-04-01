@@ -28,14 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Dtos\" />
     <Folder Include="Mapper\" />
-    <Folder Include="Service\Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Plantillas\Correo\*.html">
+    <Content Include="Templates\Correo\*.html">
 	<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	</Content>
   </ItemGroup>

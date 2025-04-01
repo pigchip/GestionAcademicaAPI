@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambio de contraseña</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            color: #333333;
+        }
+        .footer {
+            background-color: #f4f4f9;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #888888;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .token-container {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Restablecer contraseña</h1>
+        </div>
+        <div class="content">
+            <p>Hola {{nombreUsuario}},</p>
+            <p>Hemos recibido una solicitud para restablecer tu contraseña. Utiliza el siguiente token para restablecerla:</p>
+            <div class="token-container">
+                <p><strong>{{token}}</strong></p>
+            </div>
+            <p>Si no solicitaste este cambio, ignora este correo.</p>
+        </div>
+        <div class="footer">
+            <p>Saludos,<br>El equipo de UPIS</p>
+            <p>&copy; {{fechaActual}} Gestión Académica</p>
+        </div>
+    </div>
+</body>
+</html>
+
