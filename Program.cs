@@ -50,14 +50,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Registrar los repositorios
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IAdministradorRepository, AdministradorRepository>();
+builder.Services.AddScoped<IEstudianteRepository, EstudianteRepository>();
 
 // Registrar los servicios
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAdministradorService, AdministradorService>();
+builder.Services.AddScoped<IEstudianteService, EstudianteService>();
 
 // Registrar los controladores
 builder.Services.AddScoped<UsuarioController>();
 builder.Services.AddScoped<AdministradorController>();
+builder.Services.AddScoped<EstudianteController>();
 
 // Configurar CORS si es necesario
 builder.Services.AddCors(options =>

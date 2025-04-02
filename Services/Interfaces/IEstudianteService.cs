@@ -1,25 +1,22 @@
-﻿using GestionAcademicaAPI.Helpers;
+﻿using GestionAcademicaAPI.Dtos;
+using GestionAcademicaAPI.DTOs;
 using GestionAcademicaAPI.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace GestionAcademicaAPI.Repositories.Interfaces
+namespace GestionAcademicaAPI.Services.Interfaces
 {
     /// <summary>
-    /// Interfaz para el repositorio de Estudiantes
+    /// Interfaz para el servicio de Estudiantes
     /// </summary>
-    public interface IEstudianteRepository
+    public interface IEstudianteService
     {
         /// <summary>
         /// Agrega un nuevo estudiante
         /// </summary>
         /// <param name="estudiante">Estudiante a agregar</param>
         /// <returns>Estudiante agregado</returns>
-        Task<Estudiante> AddAsync(Estudiante estudiante);
-
-        /// <summary>
-        /// Obtiene todos los estudiantes
-        /// </summary>
-        /// <returns>IEnumerable de estudiantes</returns>
-        Task<IEnumerable<Estudiante>> GetAllAsync();
+        Task<EstudianteDTO> AddAsync(EstudianteDTO estudiante);
 
         /// <summary>
         /// Obtiene un estudiante por su ID
@@ -43,6 +40,19 @@ namespace GestionAcademicaAPI.Repositories.Interfaces
         Task<Estudiante?> GetByUserIdAsync(int idUsuario);
 
         /// <summary>
+        /// Obtiene estudiantes por carrera
+        /// </summary>
+        /// <param name="carrera">Nombre de la carrera</param>
+        /// <returns>Estudiantes de la carrera especificada</returns>
+        Task<IEnumerable<Estudiante>> GetByCarreraAsync(string carrera);
+
+        /// <summary>
+        /// Obtiene todos los estudiantes
+        /// </summary>
+        /// <returns>IEnumerable de estudiantes</returns>
+        Task<IEnumerable<Estudiante>> GetAllAsync();
+
+        /// <summary>
         /// Verifica si existe un estudiante con la boleta proporcionada
         /// </summary>
         /// <param name="boleta">Número de boleta</param>
@@ -57,17 +67,10 @@ namespace GestionAcademicaAPI.Repositories.Interfaces
         Task<bool> ExistsForUserAsync(int idUsuario);
 
         /// <summary>
-        /// Obtiene estudiantes por carrera
-        /// </summary>
-        /// <param name="carrera">Nombre de la carrera</param>
-        /// <returns>Estudiantes de la carrera especificada</returns>
-        Task<IEnumerable<Estudiante>> GetByCarreraAsync(string carrera);
-
-        /// <summary>
         /// Actualiza un estudiante existente
         /// </summary>
         /// <param name="estudiante">Estudiante a actualizar</param>
-        Task<Estudiante> UpdateAsync(Estudiante estudiante);
+        Task<EstudianteDTO> UpdateAsync(EstudianteDTO estudiante);
 
         /// <summary>
         /// Elimina un estudiante

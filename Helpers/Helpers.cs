@@ -128,4 +128,107 @@ namespace GestionAcademicaAPI.Helpers
         /// </summary>
         public string NuevoEmailPersonal { get; set; } = string.Empty;
     }
+
+    public class CrearEstudianteRequest
+    {
+        /// <summary>
+        /// El nombre de usuario.
+        /// </summary>
+        public string Username { get; set; } = string.Empty;
+        /// <summary>
+        /// La contraseña.
+        /// </summary>
+        public string Password { get; set; } = string.Empty;
+        /// <summary>
+        /// El correo electrónico escolar.
+        /// </summary>
+        public string EmailEscolar { get; set; } = string.Empty;
+        /// <summary>
+        /// El correo electrónico personal.
+        /// </summary>
+        public string EmailPersonal { get; set; } = string.Empty;
+        /// <summary>
+        /// El nombre del estudiante.
+        /// </summary>
+        public string Nombre { get; set; } = string.Empty;
+        /// <summary>
+        /// El apellido paterno del estudiante.
+        /// </summary>
+        public string ApellidoPaterno { get; set; } = string.Empty;
+        /// <summary>
+        /// El apellido materno del estudiante.
+        /// </summary>
+        public string ApellidoMaterno { get; set; } = string.Empty;
+        /// <summary>
+        /// El semestre en el que se encuentra el estudiante.
+        /// </summary>
+        public int Semestre { get; set; }
+        /// <summary>
+        /// El número de boleta.
+        /// </summary>
+        public int Boleta { get; set; }
+        /// <summary>
+        /// El nombre de la carrera del estudiante.
+        /// </summary>
+        public string Carrera { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Actualizar Estudiante
+    /// </summary>
+    public class ActualizarEstudianteRequest
+    {
+        /// <summary>
+        /// El ID de Estudiante.
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
+        /// El username de Estudiante.
+        /// </summary>
+        public string Username { get; set; } = string.Empty;
+        /// <summary>
+        /// La password de Estudiante
+        /// </summary>
+        public string Password { get; set; } = string.Empty;
+        /// <summary>
+        /// El nuevo nombre de Usuario
+        /// </summary>
+        public string NuevoUsername { get; set; } = string.Empty;
+        /// <summary>
+        /// La nueva Password
+        /// </summary>
+        public string NuevaPassword { get; set; } = string.Empty;
+        /// <summary>
+        /// El nuevo correo electrónico escolar.
+        /// </summary>
+        public string NuevoEmailEscolar { get; set; } = string.Empty;
+        /// <summary>
+        /// El nuevo correo electrónico personal.
+        /// </summary>
+        public string NuevoEmailPersonal { get; set; } = string.Empty;
+        /// <summary>
+        /// El nuevo número de boleta.
+        /// </summary>
+        public int NuevoBoleta { get; set; }
+        /// <summary>
+        /// El nuevo nombre del estudiante.
+        /// </summary>
+        public string NuevoNombre { get; set; } = string.Empty;
+        /// <summary>
+        /// El nuevo apellido paterno del estudiante.
+        /// </summary>
+        public string NuevoApellidoPaterno { get; set; } = string.Empty;
+        /// <summary>
+        /// El nuevo apellido materno del estudiante.
+        /// </summary>
+        public string NuevoApellidoMaterno { get; set; } = string.Empty;
+        /// <summary>
+        /// El nuevo semestre en el que se encuentra el estudiante.
+        /// </summary>
+        public int NuevoSemestre { get; set; }
+        /// <summary>
+        /// El nuevo nombre de la carrera del estudiante.
+        /// </summary>
+        public string NuevaCarrera { get; set; } = string.Empty;
+    }
 }

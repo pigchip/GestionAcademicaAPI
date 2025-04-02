@@ -52,6 +52,54 @@
             Verifica si existe un administrador para un usuario específico
             </summary>
         </member>
+        <member name="T:GestionAcademicaAPI.Controllers.EstudianteController">
+            <summary>
+            Controlador para gestionar las operaciones relacionadas con los estudiantes.
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.#ctor(GestionAcademicaAPI.Services.Interfaces.IEstudianteService,GestionAcademicaAPI.Services.Interfaces.IUsuarioService,Microsoft.Extensions.Logging.ILogger{GestionAcademicaAPI.Controllers.EstudianteController})">
+            <summary>
+            Inicializa una nueva instancia de la clase <see cref="T:GestionAcademicaAPI.Controllers.EstudianteController"/>
+            </summary>
+            <param name="estudianteService">El servicio de estudiantes</param>
+            <param name="usuarioService">El servicio de usuarios</param>
+            <param name="logger">El registrador de eventos</param>
+        </member>
+        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.Create(GestionAcademicaAPI.Helpers.CrearEstudianteRequest)">
+            <summary>
+            Agrega un nuevo estudiante
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.GetById(System.Int32)">
+            <summary>
+            Obtiene un estudiante por ID
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.GetByUserId(System.Int32)">
+            <summary>
+            Obtiene un estudiante por el ID de usuario
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.GetAll">
+            <summary>
+            Obtiene todos los estudiantes
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.Update(GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest)">
+            <summary>
+            Actualiza un estudiante existente
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.Delete(System.Int32)">
+            <summary>
+            Elimina un estudiante
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.ExistsForUser(System.Int32)">
+            <summary>
+            Verifica si existe un estudiante para un usuario específico
+            </summary>
+        </member>
         <member name="T:GestionAcademicaAPI.Controllers.UsuarioController">
             <summary>
             Controlador para gestionar las operaciones relacionadas con los usuarios.
@@ -340,6 +388,11 @@
         <member name="T:GestionAcademicaAPI.Dtos.EstudianteDTO">
             <summary>
             DTO para entidad Estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDTO.IdUsuario">
+            <summary>
+            Identificador del usuario asociado al administrador.
             </summary>
         </member>
         <member name="P:GestionAcademicaAPI.Dtos.EstudianteDTO.Nombre">
@@ -660,6 +713,126 @@
         <member name="P:GestionAcademicaAPI.Helpers.ActualizarAdminRequest.NuevoEmailPersonal">
             <summary>
             El correo electrónico personal.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Username">
+            <summary>
+            El nombre de usuario.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Password">
+            <summary>
+            La contraseña.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.EmailEscolar">
+            <summary>
+            El correo electrónico escolar.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.EmailPersonal">
+            <summary>
+            El correo electrónico personal.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Nombre">
+            <summary>
+            El nombre del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.ApellidoPaterno">
+            <summary>
+            El apellido paterno del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.ApellidoMaterno">
+            <summary>
+            El apellido materno del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Semestre">
+            <summary>
+            El semestre en el que se encuentra el estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Boleta">
+            <summary>
+            El número de boleta.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Carrera">
+            <summary>
+            El nombre de la carrera del estudiante.
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest">
+            <summary>
+            Actualizar Estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.Id">
+            <summary>
+            El ID de Estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.Username">
+            <summary>
+            El username de Estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.Password">
+            <summary>
+            La password de Estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoUsername">
+            <summary>
+            El nuevo nombre de Usuario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevaPassword">
+            <summary>
+            La nueva Password
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoEmailEscolar">
+            <summary>
+            El nuevo correo electrónico escolar.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoEmailPersonal">
+            <summary>
+            El nuevo correo electrónico personal.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoBoleta">
+            <summary>
+            El nuevo número de boleta.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoNombre">
+            <summary>
+            El nuevo nombre del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoApellidoPaterno">
+            <summary>
+            El nuevo apellido paterno del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoApellidoMaterno">
+            <summary>
+            El nuevo apellido materno del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoSemestre">
+            <summary>
+            El nuevo semestre en el que se encuentra el estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevaCarrera">
+            <summary>
+            El nuevo nombre de la carrera del estudiante.
             </summary>
         </member>
         <member name="T:GestionAcademicaAPI.Models.Administrador">
@@ -1136,6 +1309,87 @@
             <param name="idUsuario">Identificador del usuario</param>
             <returns>True si existe, False en caso contrario</returns>
         </member>
+        <member name="T:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository">
+            <summary>
+            Repositorio para gestionar entidades de tipo Estudiante
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.#ctor(MyProject.Data.AppDbContext,Microsoft.Extensions.Configuration.IConfiguration,GestionAcademicaAPI.Repositories.Interfaces.IUsuarioRepository,Microsoft.Extensions.Logging.ILogger{GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository})">
+            <summary>
+            Inicializa una nueva instancia de la clase <see cref="T:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository"/>.
+            </summary>
+            <param name="context">Contexto de la base de datos</param>
+            <param name="configuration">Configuración de la aplicación</param>
+            <param name="IusuarioRepository">Repositorio de usuario</param>
+            <param name="logger">Logger para la clase</param>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.AddAsync(GestionAcademicaAPI.Models.Estudiante)">
+            <summary>
+            Agrega un nuevo estudiante
+            </summary>
+            <param name="estudiante">Estudiante a agregar</param>
+            <returns>Estudiante agregado</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.GetByIdAsync(System.Int32)">
+            <summary>
+            Obtiene un estudiante por su ID
+            </summary>
+            <param name="id">Identificador del estudiante</param>
+            <returns>Estudiante encontrado o null</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.GetByBoletaAsync(System.Int32)">
+            <summary>
+            Obtiene un estudiante por su número de boleta
+            </summary>
+            <param name="boleta">Número de boleta del estudiante</param>
+            <returns>Estudiante encontrado o null</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.GetByUserIdAsync(System.Int32)">
+            <summary>
+            Obtiene un estudiante por el ID de usuario
+            </summary>
+            <param name="idUsuario">Identificador del usuario</param>
+            <returns>Estudiante encontrado o null</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.GetAllAsync">
+            <summary>
+            Obtiene todos los estudiantes
+            </summary>
+            <returns>IEnumerable de estudiantes</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.ExistsByBoletaAsync(System.Int32)">
+            <summary>
+            Verifica si existe un estudiante con la boleta proporcionada
+            </summary>
+            <param name="boleta">Número de boleta</param>
+            <returns>True si existe, False en caso contrario</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.ExistsForUserAsync(System.Int32)">
+            <summary>
+            Verifica si existe un estudiante para un usuario específico
+            </summary>
+            <param name="idUsuario">Identificador del usuario</param>
+            <returns>True si existe, False en caso contrario</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.GetByCarreraAsync(System.String)">
+            <summary>
+            Obtiene estudiantes por carrera
+            </summary>
+            <param name="carrera">Nombre de la carrera</param>
+            <returns>Estudiantes de la carrera especificada</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.UpdateAsync(GestionAcademicaAPI.Models.Estudiante)">
+            <summary>
+            Actualiza un estudiante existente
+            </summary>
+            <param name="estudiante">Estudiante a actualizar</param>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Elimina un estudiante
+            </summary>
+            <param name="id">Identificador del estudiante a eliminar</param>
+        </member>
         <member name="T:GestionAcademicaAPI.Repositories.Implementations.UsuarioRepository">
             <summary>
             Repositorio para gestionar entidades de tipo Usuario.
@@ -1412,6 +1666,13 @@
             Interfaz para el repositorio de Estudiantes
             </summary>
         </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.AddAsync(GestionAcademicaAPI.Models.Estudiante)">
+            <summary>
+            Agrega un nuevo estudiante
+            </summary>
+            <param name="estudiante">Estudiante a agregar</param>
+            <returns>Estudiante agregado</returns>
+        </member>
         <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.GetAllAsync">
             <summary>
             Obtiene todos los estudiantes
@@ -1439,32 +1700,6 @@
             <param name="idUsuario">Identificador del usuario</param>
             <returns>Estudiante encontrado o null</returns>
         </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.FindAsync(System.Linq.Expressions.Expression{System.Func{GestionAcademicaAPI.Models.Estudiante,System.Boolean}})">
-            <summary>
-            Busca estudiantes según un criterio específico
-            </summary>
-            <param name="predicate">Condición de búsqueda</param>
-            <returns>Estudiantes que cumplen el criterio</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.AddAsync(GestionAcademicaAPI.Models.Estudiante)">
-            <summary>
-            Agrega un nuevo estudiante
-            </summary>
-            <param name="estudiante">Estudiante a agregar</param>
-            <returns>Estudiante agregado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.UpdateAsync(GestionAcademicaAPI.Models.Estudiante)">
-            <summary>
-            Actualiza un estudiante existente
-            </summary>
-            <param name="estudiante">Estudiante a actualizar</param>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.DeleteAsync(System.Int32)">
-            <summary>
-            Elimina un estudiante
-            </summary>
-            <param name="id">Identificador del estudiante a eliminar</param>
-        </member>
         <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.ExistsByBoletaAsync(System.Int32)">
             <summary>
             Verifica si existe un estudiante con la boleta proporcionada
@@ -1485,6 +1720,18 @@
             </summary>
             <param name="carrera">Nombre de la carrera</param>
             <returns>Estudiantes de la carrera especificada</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.UpdateAsync(GestionAcademicaAPI.Models.Estudiante)">
+            <summary>
+            Actualiza un estudiante existente
+            </summary>
+            <param name="estudiante">Estudiante a actualizar</param>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.DeleteAsync(System.Int32)">
+            <summary>
+            Elimina un estudiante
+            </summary>
+            <param name="id">Identificador del estudiante a eliminar</param>
         </member>
         <member name="T:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository">
             <summary>
@@ -1934,6 +2181,34 @@
             </summary>
             <param name="correoElectronico">Correo electrónico del usuario</param>
         </member>
+        <member name="M:GestionAcademicaAPI.Services.Implementations.EstudianteService.ExistsByBoletaAsync(System.Int32)">
+            <summary>
+            Verifica si existe un estudiante con la boleta proporcionada
+            </summary>
+            <param name="boleta">Número de boleta</param>
+            <returns>True si existe, False en caso contrario</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Implementations.EstudianteService.ExistsForUserAsync(System.Int32)">
+            <summary>
+            Verifica si existe un estudiante para un usuario específico
+            </summary>
+            <param name="idUsuario">Identificador del usuario</param>
+            <returns>True si existe, False en caso contrario</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Implementations.EstudianteService.GetByBoletaAsync(System.Int32)">
+            <summary>
+            Obtiene un estudiante por su número de boleta
+            </summary>
+            <param name="boleta">Número de boleta del estudiante</param>
+            <returns>Estudiante encontrado o null</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Implementations.EstudianteService.GetByCarreraAsync(System.String)">
+            <summary>
+            Obtiene un estudiante por su carrera
+            </summary>
+            <param name="carrera">Carrera de estudiante</param>
+            <returns>Estudiante encontrado o null</returns>
+        </member>
         <member name="T:GestionAcademicaAPI.Services.Implementations.UsuarioService">
             <summary>
             Implementación del servicio de gestión de usuarios.
@@ -1987,6 +2262,78 @@
         </member>
         <member name="M:GestionAcademicaAPI.Services.Implementations.UsuarioService.EnviarNotificacionActividadAsync(System.Int32,System.String)">
             <inheritdoc/>
+        </member>
+        <member name="T:GestionAcademicaAPI.Services.Interfaces.IEstudianteService">
+            <summary>
+            Interfaz para el servicio de Estudiantes
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.AddAsync(GestionAcademicaAPI.Dtos.EstudianteDTO)">
+            <summary>
+            Agrega un nuevo estudiante
+            </summary>
+            <param name="estudiante">Estudiante a agregar</param>
+            <returns>Estudiante agregado</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.GetByIdAsync(System.Int32)">
+            <summary>
+            Obtiene un estudiante por su ID
+            </summary>
+            <param name="id">Identificador del estudiante</param>
+            <returns>Estudiante encontrado o null</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.GetByBoletaAsync(System.Int32)">
+            <summary>
+            Obtiene un estudiante por su número de boleta
+            </summary>
+            <param name="boleta">Número de boleta del estudiante</param>
+            <returns>Estudiante encontrado o null</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.GetByUserIdAsync(System.Int32)">
+            <summary>
+            Obtiene un estudiante por el ID de usuario
+            </summary>
+            <param name="idUsuario">Identificador del usuario</param>
+            <returns>Estudiante encontrado o null</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.GetByCarreraAsync(System.String)">
+            <summary>
+            Obtiene estudiantes por carrera
+            </summary>
+            <param name="carrera">Nombre de la carrera</param>
+            <returns>Estudiantes de la carrera especificada</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.GetAllAsync">
+            <summary>
+            Obtiene todos los estudiantes
+            </summary>
+            <returns>IEnumerable de estudiantes</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.ExistsByBoletaAsync(System.Int32)">
+            <summary>
+            Verifica si existe un estudiante con la boleta proporcionada
+            </summary>
+            <param name="boleta">Número de boleta</param>
+            <returns>True si existe, False en caso contrario</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.ExistsForUserAsync(System.Int32)">
+            <summary>
+            Verifica si existe un estudiante para un usuario específico
+            </summary>
+            <param name="idUsuario">Identificador del usuario</param>
+            <returns>True si existe, False en caso contrario</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.UpdateAsync(GestionAcademicaAPI.Dtos.EstudianteDTO)">
+            <summary>
+            Actualiza un estudiante existente
+            </summary>
+            <param name="estudiante">Estudiante a actualizar</param>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.DeleteAsync(System.Int32)">
+            <summary>
+            Elimina un estudiante
+            </summary>
+            <param name="id">Identificador del estudiante a eliminar</param>
         </member>
         <member name="T:GestionAcademicaAPI.Services.Interfaces.IUsuarioService">
             <summary>
