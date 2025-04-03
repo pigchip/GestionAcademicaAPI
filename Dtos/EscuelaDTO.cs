@@ -9,11 +9,6 @@ namespace GestionAcademicaAPI.Dtos
     public class EscuelaDTO
     {
         /// <summary>
-        /// Obtiene o establece el identificador único de la escuela.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// Obtiene o establece el nombre de la escuela.
         /// </summary>
         [Required]

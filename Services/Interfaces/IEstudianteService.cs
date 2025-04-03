@@ -19,6 +19,11 @@ namespace GestionAcademicaAPI.Services.Interfaces
         Task<EstudianteDTO> AddAsync(EstudianteDTO estudiante);
 
         /// <summary>
+        /// Obtener estudiante con validación de usuario
+        /// </summary>
+        Task<Estudiante> GetByCredentials(string username, string password);
+
+        /// <summary>
         /// Obtiene un estudiante por su ID
         /// </summary>
         /// <param name="id">Identificador del estudiante</param>

@@ -9,9 +9,14 @@ namespace GestionAcademicaAPI.Dtos
     public class PropuestaDTO
     {
         /// <summary>
-        /// Obtiene o establece el identificador único de la propuesta.
+        /// Username del usuario.
         /// </summary>
-        public int Id { get; set; }
+        public required string Username { get; set; }
+
+        /// <summary>
+        /// Password del usuario.
+        /// </summary>
+        public required string Password { get; set; }
 
         /// <summary>
         /// Obtiene o establece el identificador de la solicitud asociada.
@@ -22,6 +27,12 @@ namespace GestionAcademicaAPI.Dtos
         /// Obtiene o establece el identificador de la escuela asociada.
         /// </summary>
         public int IdEscuela { get; set; }
+
+        /// <summary>
+        /// Obtiene Escuela asociada a la propuesta.
+        /// </summary>
+        [Required]
+        public required Escuela Escuela { get; set; }
 
         /// <summary>
         /// Obtiene o establece el estado de la propuesta.

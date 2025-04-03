@@ -96,6 +96,35 @@ namespace GestionAcademicaAPI.Controllers
         }
 
         /// <summary>
+        /// Inicia sesión como estudiante
+        /// </summary>
+        [HttpPost("login")]
+        public async Task<ActionResult<bool>> LoginEstudiante([FromBody] LoginRequest request)
+        {
+            try
+            {
+                // Autenticar al usuario
+                var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
+                if (usuario == null)
+                {
+                    return Unauthorized("Nombre de usuario o contraseña incorrectos.");
+                }
+                // Obtener el estudiante asociado al usuario
+                var estudiante = await _estudianteService.GetByUserIdAsync(usuario.Id);
+                if (estudiante == null)
+                {
+                    return NotFound("Estudiante no encontrado");
+                }
+                return Ok(estudiante);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al autenticar estudiante");
+                return BadRequest($"Error al autenticar el estudiante: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Obtiene un estudiante por ID
         /// </summary>
         [HttpGet("{id}")]
@@ -162,87 +191,37 @@ namespace GestionAcademicaAPI.Controllers
         }
 
         /// <summary>
-        /// Actualiza un estudiante existente
+        /// Verifica si existe un estudiante para un usuario específico
         /// </summary>
-        [HttpPut]
-        public async Task<ActionResult<EstudianteDTO>> Update([FromBody] ActualizarEstudianteRequest request)
+        [HttpGet("existe/usuario/{idUsuario}")]
+        public async Task<ActionResult<bool>> ExistsForUser(int idUsuario)
         {
-            if (request == null)
-            {
-                return BadRequest("La solicitud es nula.");
-            }
-
             try
             {
-                // Autenticar al usuario
-                var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
+                // Verificar si el usuario existe
+                var usuario = await _usuarioService.ObtenerUsuarioPorIdAsync(idUsuario);
                 if (usuario == null)
                 {
-                    return Unauthorized("Nombre de usuario o contraseña incorrectos.");
+                    return NotFound($"Usuario con ID {idUsuario} no encontrado");
                 }
 
-                // Verificar si el nuevo nombre de usuario ya existe (si se está cambiando)
-                if (request.NuevoUsername != null &&
-                    request.NuevoUsername != usuario.Username &&
-                    await _usuarioService.ExisteNombreUsuarioAsync(request.NuevoUsername, usuario.Id))
+                // Verificar si existe un estudiante para el usuario
+                try
                 {
-                    return Conflict($"El nombre de usuario '{request.NuevoUsername}' ya está en uso.");
+                    var estudiante = await _estudianteService.GetByUserIdAsync(idUsuario);
+                    // Si llegamos aquí sin excepción, el estudiante existe
+                    return Ok(true);
                 }
-
-                // Verificar si el nuevo correo electrónico ya existe (si se está cambiando)
-                if (request.NuevoEmailPersonal != null &&
-                    request.NuevoEmailPersonal != usuario.EmailPersonal &&
-                    await _usuarioService.ExisteCorreoElectronicoAsync(request.NuevoEmailPersonal, usuario.Id))
+                catch (KeyNotFoundException)
                 {
-                    return Conflict($"El correo electrónico '{request.NuevoEmailPersonal}' ya está en uso.");
+                    // Si no se encuentra, no existe un estudiante para este usuario
+                    return Ok(false);
                 }
-
-                // Verificar si el nuevo correo electrónico ya existe (si se está cambiando)
-                if (request.NuevoEmailEscolar != null &&
-                    request.NuevoEmailEscolar != usuario.EmailPersonal &&
-                    await _usuarioService.ExisteCorreoElectronicoAsync(request.NuevoEmailEscolar, usuario.Id))
-                {
-                    return Conflict($"El correo electrónico '{request.NuevoEmailEscolar}' ya está en uso.");
-                }
-
-                var estudianteId = await _estudianteService.GetByUserIdAsync(usuario.Id);
-
-                if(estudianteId == null)
-                {
-                    return NotFound("Estudiante no encontrado");
-                }
-
-                // Actualizar los datos del usuario
-                var estudianteDTO = new EstudianteDTO
-                {
-                    IdUsuario = usuario.Id,
-                    Username = request.NuevoUsername,
-                    Password = request.NuevaPassword,
-                    Nombre = request.NuevoNombre,
-                    ApellidoPat = request.NuevoApellidoPaterno,
-                    ApellidoMat = request.NuevoApellidoMaterno,
-                    EmailPersonal = request.NuevoEmailPersonal,
-                    EmailEscolar = request.NuevoEmailEscolar,
-                    Boleta = request.NuevoBoleta,
-                    Carrera = request.NuevaCarrera
-                };
-
-                var estudiante = await _estudianteService.UpdateAsync(estudianteDTO);
-
-                return Ok(estudiante);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar estudiante");
-                return BadRequest($"Error al actualizar el estudiante: {ex.Message}");
+                _logger.LogError(ex, "Error al verificar existencia de estudiante para usuario con ID {IdUsuario}", idUsuario);
+                return BadRequest($"Error al verificar la existencia del estudiante: {ex.Message}");
             }
         }
 
@@ -279,39 +258,141 @@ namespace GestionAcademicaAPI.Controllers
                 return BadRequest($"Error al eliminar el estudiante: {ex.Message}");
             }
         }
-
-        /// <summary>
-        /// Verifica si existe un estudiante para un usuario específico
-        /// </summary>
-        [HttpGet("existe/usuario/{idUsuario}")]
-        public async Task<ActionResult<bool>> ExistsForUser(int idUsuario)
+        [HttpPut("update-password")]
+        public async Task<ActionResult> UpdatePassword([FromBody] ActualizarPasswordRequest request)
         {
+            if (request == null)
+            {
+                return BadRequest("La solicitud es nula.");
+            }
+
             try
             {
-                // Verificar si el usuario existe
-                var usuario = await _usuarioService.ObtenerUsuarioPorIdAsync(idUsuario);
+                var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
                 if (usuario == null)
                 {
-                    return NotFound($"Usuario con ID {idUsuario} no encontrado");
+                    return Unauthorized("Nombre de usuario o contraseña incorrectos.");
                 }
 
-                // Verificar si existe un estudiante para el usuario
-                try
+                var usuarioDTO = new UsuarioDTO
                 {
-                    var estudiante = await _estudianteService.GetByUserIdAsync(idUsuario);
-                    // Si llegamos aquí sin excepción, el estudiante existe
-                    return Ok(true);
-                }
-                catch (KeyNotFoundException)
-                {
-                    // Si no se encuentra, no existe un estudiante para este usuario
-                    return Ok(false);
-                }
+                    Username = request.Username,
+                    Password = request.NuevaPassword,
+                    EmailPersonal = usuario.EmailPersonal
+                };
+
+                usuario.Password = request.NuevaPassword;
+
+                await _usuarioService.ActualizarUsuarioAsync(usuario.Id, usuarioDTO);
+
+                return Ok("Contraseña actualizada correctamente.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al verificar existencia de estudiante para usuario con ID {IdUsuario}", idUsuario);
-                return BadRequest($"Error al verificar la existencia del estudiante: {ex.Message}");
+                _logger.LogError(ex, "Error al actualizar la contraseña");
+                return BadRequest($"Error al actualizar la contraseña: {ex.Message}");
+            }
+        }
+
+        [HttpPut("update-username")]
+        public async Task<ActionResult> UpdateUsername([FromBody] ActualizarUsernameRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("La solicitud es nula.");
+            }
+
+            try
+            {
+                var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
+                if (usuario == null)
+                {
+                    return Unauthorized("Nombre de usuario o contraseña incorrectos.");
+                }
+
+                if (await _usuarioService.ExisteNombreUsuarioAsync(request.NuevoUsername, usuario.Id))
+                {
+                    return Conflict($"El nombre de usuario '{request.NuevoUsername}' ya está en uso.");
+                }
+
+                var usuarioDTO = new UsuarioDTO
+                {
+                    Username = request.NuevoUsername,
+                    Password = request.Password,
+                    EmailPersonal = usuario.EmailPersonal
+                };
+
+                usuario.Username = request.NuevoUsername;
+                await _usuarioService.ActualizarUsuarioAsync(usuario.Id, usuarioDTO);
+
+                return Ok("Nombre de usuario actualizado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar el nombre de usuario");
+                return BadRequest($"Error al actualizar el nombre de usuario: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Actualiza los detalles de un estudiante
+        /// </summary>
+        [HttpPut("update-details")]
+        public async Task<ActionResult<EstudianteDTO>> UpdateDetails([FromBody] ActualizarEstudianteRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("La solicitud es nula.");
+            }
+
+            try
+            {
+                // 1. Autenticar al usuario (responsabilidad de autenticación)
+                var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
+                if (usuario == null)
+                {
+                    return Unauthorized("Nombre de usuario o contraseña incorrectos.");
+                }
+
+                // 2. Verificar si existe un estudiante asociado al usuario (responsabilidad de validación)
+                if (!await _estudianteService.ExistsForUserAsync(usuario.Id))
+                {
+                    return NotFound("Estudiante no encontrado");
+                }
+
+                // 3. Mapear la solicitud a un DTO (responsabilidad de presentación)
+                var estudianteDTO = new EstudianteDTO
+                {
+                    IdUsuario = usuario.Id,
+                    Username = request.Username,
+                    Password = request.Password,
+                    EmailPersonal = request.NuevoEmailPersonal,
+                    Nombre = request.NuevoNombre,
+                    ApellidoPat = request.NuevoApellidoPaterno,
+                    ApellidoMat = request.NuevoApellidoMaterno,
+                    EmailEscolar = request.NuevoEmailEscolar,
+                    Boleta = request.NuevoBoleta,
+                    Carrera = request.NuevaCarrera
+                };
+
+                // 4. Actualizar el estudiante (responsabilidad del servicio)
+                var estudiante = await _estudianteService.UpdateAsync(estudianteDTO);
+
+                // 5. Devolver respuesta (responsabilidad de presentación)
+                return Ok(estudiante);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar los detalles del estudiante");
+                return BadRequest($"Error al actualizar los detalles del estudiante: {ex.Message}");
             }
         }
     }

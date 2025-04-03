@@ -27,7 +27,7 @@ namespace GestionAcademicaAPI.DTOs
         /// </summary>
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
         [StringLength(20, MinimumLength = 5, ErrorMessage = "La contraseña debe tener entre 5 y 20 caracteres.")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,}$", ErrorMessage = "La contraseña debe ser entre 5 y 20 caractere, tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,}$", ErrorMessage = "La contraseña debe tener entre 5 y 20 caracteres, tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")]
         public required string Password { get; set; }
     }
 }

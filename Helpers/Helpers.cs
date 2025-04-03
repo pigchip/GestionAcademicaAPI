@@ -129,6 +129,21 @@ namespace GestionAcademicaAPI.Helpers
         public string NuevoEmailPersonal { get; set; } = string.Empty;
     }
 
+    public class ActualizarPasswordRequest
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string NuevaPassword { get; set; }
+    }
+
+    public class ActualizarUsernameRequest
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string NuevoUsername { get; set; }
+    }
+
+
     public class CrearEstudianteRequest
     {
         /// <summary>
@@ -160,10 +175,6 @@ namespace GestionAcademicaAPI.Helpers
         /// </summary>
         public string ApellidoMaterno { get; set; } = string.Empty;
         /// <summary>
-        /// El semestre en el que se encuentra el estudiante.
-        /// </summary>
-        public int Semestre { get; set; }
-        /// <summary>
         /// El número de boleta.
         /// </summary>
         public int Boleta { get; set; }
@@ -179,10 +190,6 @@ namespace GestionAcademicaAPI.Helpers
     public class ActualizarEstudianteRequest
     {
         /// <summary>
-        /// El ID de Estudiante.
-        /// </summary>
-        public int Id { get; set; }
-        /// <summary>
         /// El username de Estudiante.
         /// </summary>
         public string Username { get; set; } = string.Empty;
@@ -190,14 +197,6 @@ namespace GestionAcademicaAPI.Helpers
         /// La password de Estudiante
         /// </summary>
         public string Password { get; set; } = string.Empty;
-        /// <summary>
-        /// El nuevo nombre de Usuario
-        /// </summary>
-        public string NuevoUsername { get; set; } = string.Empty;
-        /// <summary>
-        /// La nueva Password
-        /// </summary>
-        public string NuevaPassword { get; set; } = string.Empty;
         /// <summary>
         /// El nuevo correo electrónico escolar.
         /// </summary>
@@ -222,10 +221,6 @@ namespace GestionAcademicaAPI.Helpers
         /// El nuevo apellido materno del estudiante.
         /// </summary>
         public string NuevoApellidoMaterno { get; set; } = string.Empty;
-        /// <summary>
-        /// El nuevo semestre en el que se encuentra el estudiante.
-        /// </summary>
-        public int NuevoSemestre { get; set; }
         /// <summary>
         /// El nuevo nombre de la carrera del estudiante.
         /// </summary>

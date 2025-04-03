@@ -9,11 +9,6 @@ namespace GestionAcademicaAPI.Dtos
     public class ComentarioDTO
     {
         /// <summary>
-        /// Obtiene o establece el identificador único del comentario.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// Obtiene o establece el contenido del comentario.
         /// </summary>
         [Required]

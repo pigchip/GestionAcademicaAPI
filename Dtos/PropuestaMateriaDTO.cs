@@ -9,11 +9,6 @@ namespace GestionAcademicaAPI.Dtos
     public class PropuestaMateriaDTO
     {
         /// <summary>
-        /// Obtiene o establece el identificador único de la relación.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// Obtiene o establece el identificador de la propuesta.
         /// </summary>
         public int IdPropuesta { get; set; }

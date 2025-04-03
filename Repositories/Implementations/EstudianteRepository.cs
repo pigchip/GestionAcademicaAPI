@@ -147,12 +147,22 @@ namespace GestionAcademicaAPI.Repositories.Implementations
         /// <param name="estudiante">Estudiante a actualizar</param>
         public async Task<Estudiante> UpdateAsync(Estudiante estudiante)
         {
-            if (estudiante == null)
+            if (estudiante == null || estudiante.Usuario == null)
             {
-                throw new ArgumentNullException(nameof(estudiante), "El estudiante no puede ser nulo");
+                throw new ArgumentNullException(nameof(estudiante), "El estudiante o su usuario no pueden ser nulos");
             }
 
-            _context.Set<Estudiante>().Update(estudiante);
+            // Attach entity and mark it as modified
+            var entry = _context.Entry(estudiante);
+            if (entry.State == EntityState.Detached)
+            {
+                _context.Estudiantes.Attach(estudiante);
+            }
+            entry.State = EntityState.Modified;
+
+            // Exclude related entity from update to avoid tracking conflicts
+            entry.Reference(e => e.Usuario).IsModified = false;
+
             await _context.SaveChangesAsync();
             return estudiante;
         }

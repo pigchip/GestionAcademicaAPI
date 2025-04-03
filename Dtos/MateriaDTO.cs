@@ -9,11 +9,6 @@ namespace GestionAcademicaAPI.Dtos
     public class MateriaDTO
     {
         /// <summary>
-        /// Obtiene o establece el identificador único de la materia.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// Obtiene o establece el nombre de la materia en ESCOM.
         /// </summary>
         [Required]

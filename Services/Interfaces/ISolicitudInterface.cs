@@ -1,12 +1,14 @@
 ﻿using GestionAcademicaAPI.Models;
-using System.Linq.Expressions;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace GestionAcademicaAPI.Repositories.Interfaces
+namespace GestionAcademicaAPI.Services.Interfaces
 {
     /// <summary>
-    /// Interface para el repositorio de solicitudes
+    /// Interface para el servicio de solicitudes
     /// </summary>
-    public interface ISolicitudRepository
+    public interface ISolicitudService
     {
         /// <summary>
         /// Agrega una nueva solicitud

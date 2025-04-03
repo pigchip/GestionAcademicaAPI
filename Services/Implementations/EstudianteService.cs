@@ -4,6 +4,8 @@ using GestionAcademicaAPI.Helpers;
 using GestionAcademicaAPI.Models;
 using GestionAcademicaAPI.Repositories.Interfaces;
 using GestionAcademicaAPI.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using MyProject.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace GestionAcademicaAPI.Services.Implementations
@@ -12,16 +14,16 @@ namespace GestionAcademicaAPI.Services.Implementations
     {
         private readonly IEstudianteRepository _estudianteRepository;
         private readonly IUsuarioRepository _usuarioRepository;
-        private readonly ILogger<EstudianteService> _logger;
+        private readonly AppDbContext _context;
 
         public EstudianteService(
             IEstudianteRepository estudianteRepository,
             IUsuarioRepository usuarioRepository,
-            ILogger<EstudianteService> logger)
+            AppDbContext context)
         {
             _estudianteRepository = estudianteRepository;
             _usuarioRepository = usuarioRepository;
-            _logger = logger;
+            _context = context;
         }
 
         public async Task<EstudianteDTO> AddAsync(EstudianteDTO dto)
@@ -109,6 +111,37 @@ namespace GestionAcademicaAPI.Services.Implementations
             };
         }
 
+        public async Task<Estudiante> GetByCredentials(string username, string password)
+        {
+            var usuario = await _usuarioRepository.AutenticarAsync(username, password);
+            if (usuario == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+            var estudiante = await _estudianteRepository.GetByUserIdAsync(usuario.Id);
+            if (estudiante == null)
+            {
+                throw new KeyNotFoundException("Student not found.");
+            }
+            return new Estudiante
+            {
+                Id = estudiante.Id,
+                IdUsuario = estudiante.IdUsuario,
+                Usuario = new Usuario
+                {
+                    Username = usuario.Username,
+                    EmailPersonal = usuario.EmailPersonal,
+                    Password = usuario.Password
+                },
+                Nombre = estudiante.Nombre,
+                ApellidoPat = estudiante.ApellidoPat,
+                ApellidoMat = estudiante.ApellidoMat,
+                EmailEscolar = estudiante.EmailEscolar,
+                Boleta = estudiante.Boleta,
+                Carrera = estudiante.Carrera
+            };
+        }
+
         public async Task<IEnumerable<Estudiante>> GetAllAsync()
         {
             var entities = await _estudianteRepository.GetAllAsync();
@@ -184,49 +217,79 @@ namespace GestionAcademicaAPI.Services.Implementations
             var validationContext = new ValidationContext(dto);
             Validator.ValidateObject(dto, validationContext, validateAllProperties: true);
 
-            // Simple approach: retrieve entity, update, and reuse existing logic
-            var existing = await _estudianteRepository.GetByUserIdAsync(dto.IdUsuario);
-            if (existing == null)
+            // Usar una transacción para garantizar la integridad de los datos
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                throw new KeyNotFoundException($"Estudiante with ID {dto.IdUsuario} not found.");
-            }
+                // Retrieve the existing entity including Usuario to work with a single instance
+                var existing = await _context.Estudiantes
+                    .Include(e => e.Usuario)
+                    .FirstOrDefaultAsync(e => e.IdUsuario == dto.IdUsuario);
 
-            // Use the UpdateAsync method from the repository
-            var updatedEstudiante = await _estudianteRepository.UpdateAsync(new Estudiante
-            {
-                Id = existing.Id,
-                Nombre = dto.Nombre,
-                ApellidoPat = dto.ApellidoPat,
-                ApellidoMat = dto.ApellidoMat,
-                EmailEscolar = dto.EmailEscolar,
-                Carrera = dto.Carrera,
-                Boleta = dto.Boleta,
-                IdUsuario = dto.IdUsuario,
-                Usuario = new Usuario
+                if (existing == null)
                 {
-                    Username = dto.Username,
-                    EmailPersonal = dto.EmailPersonal,
-                    Password = dto.Password
+                    throw new KeyNotFoundException($"Estudiante with ID {dto.IdUsuario} not found.");
                 }
-            });
 
-            // Map the updated Estudiante entity to EstudianteDTO
-            var responseEstudianteDTO = new EstudianteDTO
+                // Check if the new username already exists for a different user
+                var existingUserWithSameUsername = await _usuarioRepository.ExisteNombreUsuarioAsync(dto.Username, dto.IdUsuario);
+                if (existingUserWithSameUsername)
+                {
+                    throw new InvalidOperationException($"Username '{dto.Username}' is already taken.");
+                }
+
+                // Check if the new email already exists for a different user
+                var existingUserWithSameEmail = await _usuarioRepository.ExisteCorreoElectronicoAsync(dto.EmailPersonal, dto.IdUsuario);
+                if (existingUserWithSameEmail)
+                {
+                    throw new InvalidOperationException($"Email '{dto.EmailPersonal}' is already taken.");
+                }
+
+                // Actualizar las propiedades del Usuario existente (misma instancia)
+                existing.Usuario.Username = dto.Username;
+                existing.Usuario.EmailPersonal = dto.EmailPersonal;
+                if (!string.IsNullOrEmpty(dto.Password))
+                {
+                    existing.Usuario.Password = Helpers.Helpers.HashPassword(dto.Password);
+                }
+
+                // Actualizar las propiedades del Estudiante
+                existing.Nombre = dto.Nombre;
+                existing.ApellidoPat = dto.ApellidoPat;
+                existing.ApellidoMat = dto.ApellidoMat;
+                existing.EmailEscolar = dto.EmailEscolar;
+                existing.Boleta = dto.Boleta;
+                existing.Carrera = dto.Carrera;
+
+                // Guardar todos los cambios en una sola operación
+                await _context.SaveChangesAsync();
+
+                // Confirmar la transacción
+                await transaction.CommitAsync();
+
+                // Mapear la entidad actualizada a DTO
+                var responseDTO = new EstudianteDTO
+                {
+                    IdUsuario = existing.IdUsuario,
+                    Username = existing.Usuario.Username,
+                    EmailPersonal = existing.Usuario.EmailPersonal,
+                    Password = null, // Por seguridad, no devolvemos la contraseña
+                    Nombre = existing.Nombre,
+                    ApellidoPat = existing.ApellidoPat,
+                    ApellidoMat = existing.ApellidoMat,
+                    EmailEscolar = existing.EmailEscolar,
+                    Boleta = existing.Boleta,
+                    Carrera = existing.Carrera
+                };
+
+                return responseDTO;
+            }
+            catch (Exception)
             {
-                IdUsuario = updatedEstudiante.IdUsuario,
-                Username = updatedEstudiante.Usuario.Username,
-                EmailPersonal = updatedEstudiante.Usuario.EmailPersonal,
-                Password = updatedEstudiante.Usuario.Password,
-                Nombre = updatedEstudiante.Nombre,
-                ApellidoPat = updatedEstudiante.ApellidoPat,
-                ApellidoMat = updatedEstudiante.ApellidoMat,
-                EmailEscolar = updatedEstudiante.EmailEscolar,
-                Boleta = updatedEstudiante.Boleta,
-                Carrera = updatedEstudiante.Carrera
-            };
-
-            // Return the updated DTO
-            return responseEstudianteDTO;
+                // Si algo falla, revertir la transacción
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task DeleteAsync(int id)

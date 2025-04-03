@@ -90,6 +90,35 @@ namespace GestionAcademicaAPI.Controllers
         }
 
         /// <summary>
+        /// Inicia sesión como administrador
+        /// </summary>
+        [HttpPost("login")]
+        public async Task<ActionResult<bool>> LoginAdmin(LoginRequest request)
+        {
+            try
+            {
+                // Autenticar al usuario
+                var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
+                if (usuario == null)
+                {
+                    return Unauthorized("Nombre de usuario o contraseña incorrectos.");
+                }
+                // Verificar si el usuario es un administrador
+                var administrador = await _administradorService.GetByUserIdAsync(usuario.Id);
+                if (administrador == null)
+                {
+                    return Unauthorized("El usuario no es un administrador.");
+                }
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al autenticar administrador");
+                return BadRequest($"Error al autenticar el administrador: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Obtiene un administrador por ID
         /// </summary>
         [HttpGet("{id}")]

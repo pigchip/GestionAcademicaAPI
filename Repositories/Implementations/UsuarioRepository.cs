@@ -80,20 +80,28 @@ namespace GestionAcademicaAPI.Repositories.Implementations
         /// <inheritdoc />
         public async Task<Usuario> ActualizarAsync(Usuario usuario)
         {
-            var usuarioExistente = await _context.Set<Usuario>().FindAsync(usuario.Id);
-
-            if (usuarioExistente == null)
+            // Buscar el usuario existente para actualizar
+            var existing = await _context.Usuarios.FindAsync(usuario.Id);
+            if (existing == null)
             {
-                throw new KeyNotFoundException($"Usuario con ID {usuario.Id} no encontrado");
+                throw new KeyNotFoundException($"Usuario con ID {usuario.Id} no encontrado.");
             }
 
-            usuarioExistente.Username = usuario.Username;
-            usuarioExistente.EmailPersonal = usuario.EmailPersonal;
-            usuarioExistente.Password = usuario.Password;
+            // Actualizar las propiedades del usuario existente en lugar de crear una nueva instancia
+            existing.Username = usuario.Username;
+            existing.EmailPersonal = usuario.EmailPersonal;
+            if (usuario.Password != null)
+            {
+                existing.Password = usuario.Password;
+            }
 
+            // Marcar como modificado
+            _context.Entry(existing).State = EntityState.Modified;
+
+            // Guardar cambios
             await _context.SaveChangesAsync();
 
-            return usuarioExistente;
+            return existing;
         }
 
         /// <inheritdoc />
