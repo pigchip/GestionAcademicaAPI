@@ -43,17 +43,17 @@ namespace GestionAcademicaAPI.Models
         /// Obtiene o establece la solicitud asociada a la propuesta.
         /// </summary>
         [ForeignKey("IdSolicitud")]
-        public required Solicitud Solicitud { get; set; }
+        public Solicitud Solicitud { get; set; }
 
         /// <summary>
         /// Obtiene o establece la escuela asociada a la propuesta.
         /// </summary>
         [ForeignKey("IdEscuela")]
-        public required Escuela Escuela { get; set; }
+        public Escuela Escuela { get; set; }
 
         /// <summary>
         /// Obtiene o establece la colección de materias asociadas a la propuesta.
         /// </summary>
-        public ICollection<PropuestaMateria> PropuestaMaterias { get; set; } = new List<PropuestaMateria>();
+        public ICollection<Materia> Materias { get; set; } = new List<Materia>();
     }
 }

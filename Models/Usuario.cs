@@ -32,8 +32,6 @@ namespace GestionAcademicaAPI.Models
         /// Obtiene o establece la contraseña del usuario.
         /// </summary>
         [Required]
-        [StringLength(20, MinimumLength = 5)]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")]
         public required string Password { get; set; }
 
         /// <summary>

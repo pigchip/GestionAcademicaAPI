@@ -2,10 +2,6 @@
 using GestionAcademicaAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using MyProject.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GestionAcademicaAPI.Repositories.Implementations
 {
@@ -27,27 +23,55 @@ namespace GestionAcademicaAPI.Repositories.Implementations
 
         public async Task<IEnumerable<Solicitud>> GetAllAsync()
         {
-            return await _context.Solicitudes.ToListAsync();
+            return await _context.Solicitudes
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Escuela)
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Materias)
+                .ToListAsync();
         }
 
         public async Task<Solicitud?> GetByIdAsync(int id)
         {
-            return await _context.Solicitudes.FindAsync(id);
+            return await _context.Solicitudes
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Escuela)
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Materias)
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<IEnumerable<Solicitud>> GetByEstudianteIdAsync(int idEstudiante)
         {
-            return await _context.Solicitudes.Where(s => s.IdEstudiante == idEstudiante).ToListAsync();
+            return await _context.Solicitudes
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Escuela)
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Materias)
+                .Where(s => s.IdEstudiante == idEstudiante)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Solicitud>> GetByStatusAsync(string status)
         {
-            return await _context.Solicitudes.Where(s => s.Status == status).ToListAsync();
+            return await _context.Solicitudes
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Escuela)
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Materias)
+                .Where(s => s.Status == status)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Solicitud>> GetByDateRangeAsync(DateTime fechaInicio, DateTime fechaFin)
         {
-            return await _context.Solicitudes.Where(s => s.Fecha >= fechaInicio && s.Fecha <= fechaFin).ToListAsync();
+            return await _context.Solicitudes
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Escuela)
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Materias)
+                .Where(s => s.Fecha >= fechaInicio && s.Fecha <= fechaFin)
+                .ToListAsync();
         }
 
         public async Task UpdateAsync(Solicitud solicitud)
@@ -79,6 +103,10 @@ namespace GestionAcademicaAPI.Repositories.Implementations
         public async Task<Solicitud?> GetLastSolicitudByEstudianteAsync(int idEstudiante)
         {
             return await _context.Solicitudes
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Escuela)
+                .Include(s => s.Propuestas)
+                    .ThenInclude(p => p.Materias)
                 .Where(s => s.IdEstudiante == idEstudiante)
                 .OrderByDescending(s => s.Fecha)
                 .FirstOrDefaultAsync();

@@ -59,7 +59,10 @@ namespace GestionAcademicaAPI.Repositories.Implementations
 
         public async Task UpdateAsync(Propuesta propuesta)
         {
-            _context.Entry(propuesta).State = EntityState.Modified;
+            var existingPropuesta = await _context.Propuestas.FindAsync(propuesta.Id);
+            if (existingPropuesta == null)
+                throw new KeyNotFoundException($"Propuesta con ID {propuesta.Id} no encontrada.");
+            _context.Entry(existingPropuesta).CurrentValues.SetValues(propuesta);
             await _context.SaveChangesAsync();
         }
 

@@ -3,7 +3,6 @@ using GestionAcademicaAPI.Models;
 using GestionAcademicaAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GestionAcademicaAPI.Controllers
@@ -13,57 +12,53 @@ namespace GestionAcademicaAPI.Controllers
     public class SolicitudController : ControllerBase
     {
         private readonly ISolicitudService _solicitudService;
-        private readonly IEstudianteService _estudianteService;
 
-        public SolicitudController(ISolicitudService solicitudService, IEstudianteService estudianteService)
+        public SolicitudController(ISolicitudService solicitudService)
         {
             _solicitudService = solicitudService;
-            _estudianteService = estudianteService;
         }
-
-        // Inside the AddAsync method, update the code as follows:
 
         [HttpPost]
-        public async Task<ActionResult<Solicitud>> AddAsync(SolicitudDTO solicitudDto)
+        public async Task<ActionResult<SolicitudResponseDto>> AddAsync([FromBody] SolicitudRequestDto solicitudDto)
         {
-            var getEstudiante = await _estudianteService.GetByIdAsync(solicitudDto.IdEstudiante);
-
-            var solicitud = new Solicitud
+            if (!ModelState.IsValid)
             {
-                IdEstudiante = solicitudDto.IdEstudiante,
-                Status = solicitudDto.Status,
-                Fecha = solicitudDto.Fecha,
-                Estudiante = getEstudiante,
-                Propuestas = solicitudDto.Propuestas.Select(p => new Propuesta
-                {
-                    IdEscuela = p.IdEscuela,
-                    Escuela = p.Escuela,
-                    Status = p.Status,
-                    Fecha = p.Fecha,
-                    Solicitud = null // Temporarily set to null
-                }).ToList()
-            };
-
-            // Update the Solicitud property of each Propuesta
-            foreach (var propuesta in solicitud.Propuestas)
-            {
-                propuesta.Solicitud = solicitud;
+                return BadRequest(ModelState);
             }
 
-            var result = await _solicitudService.AddAsync(solicitud);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
+            try
+            {
+                var result = await _solicitudService.AddAsyncSolicitud(solicitudDto);
+                if (result == null || result.Id == 0)
+                {
+                    return StatusCode(500, new { Message = "No se pudo crear la solicitud correctamente." });
+                }
+
+                return Created($"api/Solicitud/{result.Id}", result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (ApplicationException ex)
+            {
+                return StatusCode(500, new { Message = ex.Message, Details = ex.InnerException?.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Error inesperado en el servidor.", Details = ex.Message });
+            }
         }
 
-        // Read
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Solicitud>>> GetAllAsync()
+        public async Task<ActionResult<IEnumerable<SolicitudResponseDto>>> GetAllAsync()
         {
             var result = await _solicitudService.GetAllAsync();
             return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Solicitud?>> GetByIdAsync(int id)
+        public async Task<ActionResult<SolicitudResponseDto>> GetByIdAsync(int id)
         {
             var result = await _solicitudService.GetByIdAsync(id);
             if (result == null)
@@ -74,21 +69,21 @@ namespace GestionAcademicaAPI.Controllers
         }
 
         [HttpGet("estudiante/{idEstudiante}")]
-        public async Task<ActionResult<IEnumerable<Solicitud>>> GetByEstudianteIdAsync(int idEstudiante)
+        public async Task<ActionResult<IEnumerable<SolicitudResponseDto>>> GetByEstudianteIdAsync(int idEstudiante)
         {
             var result = await _solicitudService.GetByEstudianteIdAsync(idEstudiante);
             return Ok(result);
         }
 
         [HttpGet("status/{status}")]
-        public async Task<ActionResult<IEnumerable<Solicitud>>> GetByStatusAsync(string status)
+        public async Task<ActionResult<IEnumerable<SolicitudResponseDto>>> GetByStatusAsync(string status)
         {
             var result = await _solicitudService.GetByStatusAsync(status);
             return Ok(result);
         }
 
         [HttpGet("fecha")]
-        public async Task<ActionResult<IEnumerable<Solicitud>>> GetByDateRangeAsync(DateTime fechaInicio, DateTime fechaFin)
+        public async Task<ActionResult<IEnumerable<SolicitudResponseDto>>> GetByDateRangeAsync(DateTime fechaInicio, DateTime fechaFin)
         {
             var result = await _solicitudService.GetByDateRangeAsync(fechaInicio, fechaFin);
             return Ok(result);
@@ -109,7 +104,7 @@ namespace GestionAcademicaAPI.Controllers
         }
 
         [HttpGet("last/estudiante/{idEstudiante}")]
-        public async Task<ActionResult<Solicitud?>> GetLastSolicitudByEstudianteAsync(int idEstudiante)
+        public async Task<ActionResult<SolicitudResponseDto>> GetLastSolicitudByEstudianteAsync(int idEstudiante)
         {
             var result = await _solicitudService.GetLastSolicitudByEstudianteAsync(idEstudiante);
             if (result == null)
@@ -119,25 +114,45 @@ namespace GestionAcademicaAPI.Controllers
             return Ok(result);
         }
 
-        // Update
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(int id, Solicitud solicitud)
+        [HttpPut]
+        public async Task<ActionResult<SolicitudResponseDto>> UpdateAsync([FromBody] SolicitudUpdateDto solicitudDto)
         {
-            if (id != solicitud.Id)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            await _solicitudService.UpdateAsync(solicitud);
-            return NoContent();
+            try
+            {
+                var result = await _solicitudService.UpdateAsync(solicitudDto);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (ApplicationException ex)
+            {
+                return StatusCode(500, new { Message = ex.Message, Details = ex.InnerException?.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Error al actualizar la solicitud.", Details = ex.Message });
+            }
         }
 
-        // Delete
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            await _solicitudService.DeleteAsync(id);
-            return NoContent();
+            try
+            {
+                await _solicitudService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Error al eliminar la solicitud.", Details = ex.Message });
+            }
         }
     }
 }

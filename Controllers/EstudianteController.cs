@@ -258,6 +258,7 @@ namespace GestionAcademicaAPI.Controllers
                 return BadRequest($"Error al eliminar el estudiante: {ex.Message}");
             }
         }
+
         [HttpPut("update-password")]
         public async Task<ActionResult> UpdatePassword([FromBody] ActualizarPasswordRequest request)
         {

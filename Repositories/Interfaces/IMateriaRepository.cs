@@ -29,6 +29,13 @@ namespace GestionAcademicaAPI.Repositories.Interfaces
         Task<IEnumerable<Materia>> FindAsync(Expression<Func<Materia, bool>> predicate);
 
         /// <summary>
+        /// Obtiene maetrias por ID
+        /// </summary>
+        /// <param name="idPropuesta"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Materia>> GetByPropuestaIdAsync(int idPropuesta);
+
+        /// <summary>
         /// Obtiene materias por ID de estudiante
         /// </summary>
         /// <param name="idEstudiante">Identificador del estudiante</param>

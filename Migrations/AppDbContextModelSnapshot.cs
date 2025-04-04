@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyProject.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,11 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GestionAcademicaAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250330115721_UsuarioChange")]
-    partial class UsuarioChange
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,39 +22,7 @@ namespace GestionAcademicaAPI.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("GestionAcademicaAPI.Models.Entities.RegistroEnvioCorreo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DetallesError")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("FechaEnvio")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("Resultado")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("TipoCorreo")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdUsuario");
-
-                    b.ToTable("RegistroEnvioCorreos");
-                });
-
-            modelBuilder.Entity("MyProject.Models.Administrador", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Administrador", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,7 +41,7 @@ namespace GestionAcademicaAPI.Migrations
                     b.ToTable("Administradores");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Comentario", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Comentario", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -106,7 +71,7 @@ namespace GestionAcademicaAPI.Migrations
                     b.ToTable("Comentarios");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Escuela", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Escuela", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -127,7 +92,7 @@ namespace GestionAcademicaAPI.Migrations
                     b.ToTable("Escuelas");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Estudiante", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Estudiante", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -183,7 +148,7 @@ namespace GestionAcademicaAPI.Migrations
                     b.ToTable("Estudiantes");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Materia", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Materia", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -192,6 +157,9 @@ namespace GestionAcademicaAPI.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("IdEstudiante")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IdPropuesta")
                         .HasColumnType("integer");
 
                     b.Property<string>("NombreMateriaEscom")
@@ -216,10 +184,12 @@ namespace GestionAcademicaAPI.Migrations
 
                     b.HasIndex("IdEstudiante");
 
+                    b.HasIndex("IdPropuesta");
+
                     b.ToTable("Materias");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Propuesta", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Propuesta", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -250,7 +220,7 @@ namespace GestionAcademicaAPI.Migrations
                     b.ToTable("Propuestas");
                 });
 
-            modelBuilder.Entity("MyProject.Models.PropuestaMateria", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.RegistroEnvioCorreo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -258,22 +228,31 @@ namespace GestionAcademicaAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("IdMateria")
+                    b.Property<string>("DetallesError")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("FechaEnvio")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("IdUsuario")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdPropuesta")
-                        .HasColumnType("integer");
+                    b.Property<bool>("Resultado")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("TipoCorreo")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdMateria");
+                    b.HasIndex("IdUsuario");
 
-                    b.HasIndex("IdPropuesta");
-
-                    b.ToTable("PropuestaMaterias");
+                    b.ToTable("RegistroEnvioCorreos");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Solicitud", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Solicitud", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -299,7 +278,7 @@ namespace GestionAcademicaAPI.Migrations
                     b.ToTable("Solicitudes");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Usuario", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -309,8 +288,8 @@ namespace GestionAcademicaAPI.Migrations
 
                     b.Property<string>("EmailPersonal")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -325,8 +304,8 @@ namespace GestionAcademicaAPI.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.HasKey("Id");
 
@@ -339,37 +318,26 @@ namespace GestionAcademicaAPI.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("GestionAcademicaAPI.Models.Entities.RegistroEnvioCorreo", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Administrador", b =>
                 {
-                    b.HasOne("MyProject.Models.Usuario", "Usuario")
-                        .WithMany("RegistroEnvioCorreos")
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("MyProject.Models.Administrador", b =>
-                {
-                    b.HasOne("MyProject.Models.Usuario", "Usuario")
+                    b.HasOne("GestionAcademicaAPI.Models.Usuario", "Usuario")
                         .WithOne("Administrador")
-                        .HasForeignKey("MyProject.Models.Administrador", "IdUsuario")
+                        .HasForeignKey("GestionAcademicaAPI.Models.Administrador", "IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Comentario", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Comentario", b =>
                 {
-                    b.HasOne("MyProject.Models.Materia", "Materia")
+                    b.HasOne("GestionAcademicaAPI.Models.Materia", "Materia")
                         .WithMany("Comentarios")
                         .HasForeignKey("IdMateria")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyProject.Models.Usuario", "Usuario")
+                    b.HasOne("GestionAcademicaAPI.Models.Usuario", "Usuario")
                         .WithMany("Comentarios")
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -380,37 +348,45 @@ namespace GestionAcademicaAPI.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Estudiante", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Estudiante", b =>
                 {
-                    b.HasOne("MyProject.Models.Usuario", "Usuario")
+                    b.HasOne("GestionAcademicaAPI.Models.Usuario", "Usuario")
                         .WithOne("Estudiante")
-                        .HasForeignKey("MyProject.Models.Estudiante", "IdUsuario")
+                        .HasForeignKey("GestionAcademicaAPI.Models.Estudiante", "IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Materia", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Materia", b =>
                 {
-                    b.HasOne("MyProject.Models.Estudiante", "Estudiante")
+                    b.HasOne("GestionAcademicaAPI.Models.Estudiante", "Estudiante")
                         .WithMany("Materias")
                         .HasForeignKey("IdEstudiante")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GestionAcademicaAPI.Models.Propuesta", "Propuesta")
+                        .WithMany("Materias")
+                        .HasForeignKey("IdPropuesta")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Estudiante");
+
+                    b.Navigation("Propuesta");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Propuesta", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Propuesta", b =>
                 {
-                    b.HasOne("MyProject.Models.Escuela", "Escuela")
+                    b.HasOne("GestionAcademicaAPI.Models.Escuela", "Escuela")
                         .WithMany("Propuestas")
                         .HasForeignKey("IdEscuela")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MyProject.Models.Solicitud", "Solicitud")
+                    b.HasOne("GestionAcademicaAPI.Models.Solicitud", "Solicitud")
                         .WithMany("Propuestas")
                         .HasForeignKey("IdSolicitud")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -421,66 +397,56 @@ namespace GestionAcademicaAPI.Migrations
                     b.Navigation("Solicitud");
                 });
 
-            modelBuilder.Entity("MyProject.Models.PropuestaMateria", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.RegistroEnvioCorreo", b =>
                 {
-                    b.HasOne("MyProject.Models.Materia", "Materia")
-                        .WithMany("PropuestaMaterias")
-                        .HasForeignKey("IdMateria")
+                    b.HasOne("GestionAcademicaAPI.Models.Usuario", "Usuario")
+                        .WithMany("RegistroEnvioCorreos")
+                        .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyProject.Models.Propuesta", "Propuesta")
-                        .WithMany("PropuestaMaterias")
-                        .HasForeignKey("IdPropuesta")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Materia");
-
-                    b.Navigation("Propuesta");
+                    b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Solicitud", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Solicitud", b =>
                 {
-                    b.HasOne("MyProject.Models.Estudiante", "Estudiante")
+                    b.HasOne("GestionAcademicaAPI.Models.Estudiante", "Estudiante")
                         .WithMany("Solicitudes")
                         .HasForeignKey("IdEstudiante")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Estudiante");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Escuela", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Escuela", b =>
                 {
                     b.Navigation("Propuestas");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Estudiante", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Estudiante", b =>
                 {
                     b.Navigation("Materias");
 
                     b.Navigation("Solicitudes");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Materia", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Materia", b =>
                 {
                     b.Navigation("Comentarios");
-
-                    b.Navigation("PropuestaMaterias");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Propuesta", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Propuesta", b =>
                 {
-                    b.Navigation("PropuestaMaterias");
+                    b.Navigation("Materias");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Solicitud", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Solicitud", b =>
                 {
                     b.Navigation("Propuestas");
                 });
 
-            modelBuilder.Entity("MyProject.Models.Usuario", b =>
+            modelBuilder.Entity("GestionAcademicaAPI.Models.Usuario", b =>
                 {
                     b.Navigation("Administrador");
 

@@ -37,7 +37,7 @@ namespace GestionAcademicaAPI.Models
         /// Obtiene o establece el estudiante asociado a la solicitud.
         /// </summary>
         [ForeignKey("IdEstudiante")]
-        public required Estudiante Estudiante { get; set; }
+        public Estudiante Estudiante { get; set; }
 
         /// <summary>
         /// Obtiene o establece la colección de propuestas asociadas a la solicitud.

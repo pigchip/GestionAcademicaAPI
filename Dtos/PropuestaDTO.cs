@@ -9,47 +9,34 @@ namespace GestionAcademicaAPI.Dtos
     public class PropuestaDTO
     {
         /// <summary>
-        /// Username del usuario.
-        /// </summary>
-        public required string Username { get; set; }
-
-        /// <summary>
-        /// Password del usuario.
-        /// </summary>
-        public required string Password { get; set; }
-
-        /// <summary>
         /// Obtiene o establece el identificador de la solicitud asociada.
         /// </summary>
+        [Required(ErrorMessage = "El ID de la solicitud es obligatorio.")]
         public int IdSolicitud { get; set; }
 
         /// <summary>
         /// Obtiene o establece el identificador de la escuela asociada.
         /// </summary>
+        [Required(ErrorMessage = "El ID de la escuela es obligatorio.")]
         public int IdEscuela { get; set; }
-
-        /// <summary>
-        /// Obtiene Escuela asociada a la propuesta.
-        /// </summary>
-        [Required]
-        public required Escuela Escuela { get; set; }
 
         /// <summary>
         /// Obtiene o establece el estado de la propuesta.
         /// </summary>
-        [Required]
-        [StringLength(50)]
+        [Required(ErrorMessage = "El estado es obligatorio.")]
+        [StringLength(50, ErrorMessage = "El estado no puede tener más de 50 caracteres.")]
         public required string Status { get; set; }
 
         /// <summary>
         /// Obtiene o establece la fecha en que se realizó la propuesta.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "La fecha es obligatoria.")]
         public DateTime Fecha { get; set; }
 
         /// <summary>
         /// Obtiene o establece la colección de materias asociadas a la propuesta.
         /// </summary>
-        public ICollection<PropuestaMateriaDTO> PropuestaMaterias { get; set; } = new List<PropuestaMateriaDTO>();
+        [Required(ErrorMessage = "La lista de materias es obligatoria.")]
+        public ICollection<MateriaDTO> Materias { get; set; } = new List<MateriaDTO>();
     }
 }

@@ -47,15 +47,22 @@ namespace GestionAcademicaAPI.Models
         public int IdEstudiante { get; set; }
 
         /// <summary>
+        /// Propuesta asociada ala materia
+        /// </summary>
+        [Required]
+        public int IdPropuesta { get; set; }
+
+        /// <summary>
         /// Obtiene o establece el estudiante asociado a la materia.
         /// </summary>
         [ForeignKey("IdEstudiante")]
-        public required Estudiante Estudiante { get; set; }
+        public Estudiante Estudiante { get; set; }
 
         /// <summary>
         /// Obtiene o establece la colección de propuestas de materia asociadas.
         /// </summary>
-        public ICollection<PropuestaMateria> PropuestaMaterias { get; set; } = new List<PropuestaMateria>();
+        [ForeignKey("IdPropuesta")]
+        public Propuesta Propuesta { get; set; }
 
         /// <summary>
         /// Obtiene o establece la colección de comentarios asociados a la materia.

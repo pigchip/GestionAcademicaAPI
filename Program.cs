@@ -7,7 +7,6 @@ using GestionAcademicaAPI.Repositories.Implementations;
 using GestionAcademicaAPI.Repositories.Interfaces;
 using GestionAcademicaAPI.Services.Implementations;
 using GestionAcademicaAPI.Services.Interfaces;
-using System.Text.Json.Serialization;
 using GestionAcademicaAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +20,9 @@ Env.Load();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        // Eliminar ReferenceHandler.Preserve para evitar $id
+        options.JsonSerializerOptions.ReferenceHandler = null; // O usa ReferenceHandler.IgnoreCycles si quieres manejar ciclos sin $id
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // Mantener nombres como están en el DTO
     });
 
 // Agregar soporte para Swagger/OpenAPI
@@ -40,13 +41,11 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 
-    // Habilitar la generación de comentarios XML para los modelos
     var xmlFile = Path.Combine(Directory.GetCurrentDirectory(), "GestionAcademica.xml");
     c.IncludeXmlComments(xmlFile);
 });
 
-// Agregar servicios al contenedor.
-
+// Registrar servicios
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
@@ -59,7 +58,6 @@ builder.Services.AddScoped<IMateriaRepository, MateriaRepository>();
 builder.Services.AddScoped<IPropuestaRepository, PropuestaRepository>();
 builder.Services.AddScoped<ISolicitudRepository, SolicitudRepository>();
 builder.Services.AddScoped<IComentarioRepository, ComentarioRepository>();
-builder.Services.AddScoped<IPropuestaMateriaRepository, PropuestaMateriaRepository>();
 
 // Registrar los servicios
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
@@ -70,7 +68,6 @@ builder.Services.AddScoped<IMateriaService, MateriaService>();
 builder.Services.AddScoped<IPropuestaService, PropuestaService>();
 builder.Services.AddScoped<ISolicitudService, SolicitudService>();
 builder.Services.AddScoped<IComentarioService, ComentarioService>();
-builder.Services.AddScoped<IPropuestaMateriaService, PropuestaMateriaService>();
 
 // Registrar los controladores
 builder.Services.AddScoped<UsuarioController>();

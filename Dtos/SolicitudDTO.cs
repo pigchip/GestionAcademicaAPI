@@ -1,15 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GestionAcademicaAPI.Dtos;
+using System.ComponentModel.DataAnnotations;
 
 namespace GestionAcademicaAPI.Dtos
 {
-    /// <summary>
-    /// DTO para entidad Solicitud.
-    /// </summary>
     public class SolicitudDTO
     {
         /// <summary>
         /// Obtiene o establece el identificador del estudiante que realizó la solicitud.
         /// </summary>
+        [Required(ErrorMessage = "El ID del estudiante es obligatorio.")]
         public int IdEstudiante { get; set; }
 
         /// <summary>
@@ -24,6 +23,13 @@ namespace GestionAcademicaAPI.Dtos
         /// </summary>
         [Required(ErrorMessage = "La fecha es obligatoria.")]
         public DateTime Fecha { get; set; }
+
+        /// <summary>
+        /// Obtiene o establece el nombre de la escuela asociada a la solicitud.
+        /// </summary>
+        [Required(ErrorMessage = "El nombre de la escuela es obligatorio.")]
+        [StringLength(100, ErrorMessage = "El nombre de la escuela no puede exceder los 100 caracteres.")]
+        public required string NombreEscuela { get; set; }
 
         /// <summary>
         /// Obtiene o establece la colección de propuestas asociadas a la solicitud.
