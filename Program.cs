@@ -11,7 +11,7 @@ using GestionAcademicaAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:5001");
+builder.WebHost.UseUrls("http://0.0.0.0:8084", "https://0.0.0.0:5001");
 
 // Cargar variables de entorno desde el archivo .env
 Env.Load();
