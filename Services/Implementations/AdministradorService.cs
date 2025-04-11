@@ -1,8 +1,11 @@
+using GestionAcademicaAPI.Dtos;
 using GestionAcademicaAPI.DTOs;
 using GestionAcademicaAPI.Helpers;
 using GestionAcademicaAPI.Models;
 using GestionAcademicaAPI.Repositories.Interfaces;
 using GestionAcademicaAPI.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using MyProject.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace GestionAcademicaAPI.Services.Implementations
@@ -12,15 +15,18 @@ namespace GestionAcademicaAPI.Services.Implementations
         private readonly IAdministradorRepository _administradorRepository;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ILogger<AdministradorService> _logger;
+        private readonly AppDbContext _context;
 
         public AdministradorService(
             IAdministradorRepository administradorRepository,
             IUsuarioRepository usuarioRepository,
-            ILogger<AdministradorService> logger)
+            ILogger<AdministradorService> logger,
+            AppDbContext context)
         {
             _administradorRepository = administradorRepository;
             _usuarioRepository = usuarioRepository;
             _logger = logger;
+            _context = context;
         }
 
         public async Task<AdministradorDTO> AddAsync(UsuarioDTO dto)
@@ -152,45 +158,72 @@ namespace GestionAcademicaAPI.Services.Implementations
 
         public async Task<AdministradorDTO> UpdateAsync(AdministradorDTO dto)
         {
-            // Simple approach: retrieve entity, update, and reuse existing logic
-            var existing = await _administradorRepository.GetByIdAsync(dto.IdUsuario);
-            if (existing == null) throw new KeyNotFoundException();
+            // Validate the DTO
+            var validationContext = new ValidationContext(dto);
+            Validator.ValidateObject(dto, validationContext, validateAllProperties: true);
 
-            // Check if the new username is a duplicate
-            if (await _usuarioRepository.ExisteNombreUsuarioAsync(dto.Usuario.Username, dto.IdUsuario))
+            // Usar una transacción para garantizar la integridad de los datos
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                throw new InvalidOperationException("The username is already taken.");
-            }
+                // Retrieve the existing entity including Usuario to work with a single instance
+                var existing = await _context.Administradores
+                    .Include(e => e.Usuario)
+                    .FirstOrDefaultAsync(e => e.IdUsuario == dto.IdUsuario);
 
-            // Check if the new email is a duplicate
-            if (await _usuarioRepository.ExisteCorreoElectronicoAsync(dto.Usuario.EmailPersonal, dto.IdUsuario))
-            {
-                throw new InvalidOperationException("The email is already taken.");
-            }
-
-            existing.Usuario.Username = dto.Usuario.Username;               // New username
-            existing.Usuario.EmailPersonal = dto.Usuario.EmailPersonal;     // New email
-            existing.Usuario.Password = dto.Usuario.Password;               // New password
-
-            // Use the UpdateAsync method from the repository
-            var updated = await _administradorRepository.UpdateAsync(new ActualizarAdminRequest
-            {
-                Id = existing.Id,
-                NuevoUsername = existing.Usuario.Username,
-                NuevaPassword = existing.Usuario.Password,
-                NuevoEmailPersonal = existing.Usuario.EmailPersonal
-            });
-
-            return new AdministradorDTO
-            {
-                IdUsuario = updated.IdUsuario,
-                Usuario = new UsuarioDTO
+                if (existing == null)
                 {
-                    Username = updated.Usuario.Username,
-                    EmailPersonal = updated.Usuario.EmailPersonal,
-                    Password = updated.Usuario.Password
+                    throw new KeyNotFoundException($"Administrador with ID {dto.IdUsuario} not found.");
                 }
-            };
+
+                // Check if the new username already exists for a different user
+                var existingUserWithSameUsername = await _usuarioRepository.ExisteNombreUsuarioAsync(dto.Usuario.Username, dto.IdUsuario);
+                if (existingUserWithSameUsername)
+                {
+                    throw new InvalidOperationException($"Username '{dto.Usuario.Username}' is already taken.");
+                }
+
+                // Check if the new email already exists for a different user
+                var existingUserWithSameEmail = await _usuarioRepository.ExisteCorreoElectronicoAsync(dto.Usuario.EmailPersonal, dto.IdUsuario);
+                if (existingUserWithSameEmail)
+                {
+                    throw new InvalidOperationException($"Email '{dto.Usuario.EmailPersonal}' is already taken.");
+                }
+
+                // Actualizar las propiedades del Usuario existente (misma instancia)
+                existing.Usuario.Username = dto.Usuario.Username;
+                existing.Usuario.EmailPersonal = dto.Usuario.EmailPersonal;
+                if (!string.IsNullOrEmpty(dto.Usuario.Password))
+                {
+                    existing.Usuario.Password = Helpers.Helpers.HashPassword(dto.Usuario.Password);
+                }
+
+                // Guardar todos los cambios en una sola operación
+                await _context.SaveChangesAsync();
+
+                // Confirmar la transacción
+                await transaction.CommitAsync();
+
+                // Mapear la entidad actualizada a DTO
+                var responseDTO = new AdministradorDTO
+                {
+                    IdUsuario = existing.IdUsuario,
+                    Usuario = new UsuarioDTO
+                    {
+                        Username = existing.Usuario.Username,
+                        EmailPersonal = existing.Usuario.EmailPersonal,
+                        Password = existing.Usuario.Password
+                    }
+                };
+
+                return responseDTO;
+            }
+            catch (Exception)
+            {
+                // Si algo falla, revertir la transacción
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task DeleteAsync(int id)

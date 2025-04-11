@@ -34,9 +34,9 @@ namespace GestionAcademicaAPI.Services.Implementations
             return await _comentarioRepository.GetByUserIdAsync(idUsuario);
         }
 
-        public async Task<IEnumerable<Comentario>> GetByMateriaIdAsync(int idMateria)
+        public async Task<IEnumerable<Comentario>> GetBySolicitudIdAsync(int idSolicitud)
         {
-            return await _comentarioRepository.GetByMateriaIdAsync(idMateria);
+            return await _comentarioRepository.GetBySolicitudIdAsync(idSolicitud);
         }
 
         public async Task<IEnumerable<Comentario>> GetByDateRangeAsync(DateTime fechaInicio, DateTime fechaFin)
@@ -59,9 +59,9 @@ namespace GestionAcademicaAPI.Services.Implementations
             await _comentarioRepository.DeleteAsync(id);
         }
 
-        public async Task<int> CountByMateriaAsync(int idMateria)
+        public async Task<int> CountBySolicitudAsync(int idSolicitud)
         {
-            return await _comentarioRepository.CountByMateriaAsync(idMateria);
+            return await _comentarioRepository.CountBySolicitudAsync(idSolicitud);
         }
 
         public async Task<int> CountByUserAsync(int idUsuario)

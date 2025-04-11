@@ -83,5 +83,17 @@ namespace GestionAcademicaAPI.Services.Implementations
         {
             return await _materiaRepository.ExistsByNombreMateriaForaneaAsync(nombreMateriaForanea);
         }
+
+        // Implementación del nuevo método
+        public async Task UpdateTemarioAsync(UpdateTemarioDto request)
+        {
+            await _materiaRepository.UpdateTemarioAsync(request);
+        }
+
+        // Implementación del nuevo método
+        public async Task UpdateStatusAsync(UpdateStatusDto request)
+        {
+            await _materiaRepository.UpdateStatusAsync(request);
+        }
     }
 }

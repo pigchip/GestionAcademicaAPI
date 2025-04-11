@@ -28,6 +28,7 @@ namespace GestionAcademicaAPI.Repositories.Implementations
                     .ThenInclude(p => p.Escuela)
                 .Include(s => s.Propuestas)
                     .ThenInclude(p => p.Materias)
+                .Include(s => s.Comentarios) // Agregar comentarios
                 .ToListAsync();
         }
 
@@ -38,6 +39,7 @@ namespace GestionAcademicaAPI.Repositories.Implementations
                     .ThenInclude(p => p.Escuela)
                 .Include(s => s.Propuestas)
                     .ThenInclude(p => p.Materias)
+                .Include(s => s.Comentarios) // Agregar comentarios
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
@@ -48,6 +50,7 @@ namespace GestionAcademicaAPI.Repositories.Implementations
                     .ThenInclude(p => p.Escuela)
                 .Include(s => s.Propuestas)
                     .ThenInclude(p => p.Materias)
+                .Include(s => s.Comentarios) // Agregar comentarios
                 .Where(s => s.IdEstudiante == idEstudiante)
                 .ToListAsync();
         }
@@ -59,6 +62,7 @@ namespace GestionAcademicaAPI.Repositories.Implementations
                     .ThenInclude(p => p.Escuela)
                 .Include(s => s.Propuestas)
                     .ThenInclude(p => p.Materias)
+                .Include(s => s.Comentarios) // Agregar comentarios
                 .Where(s => s.Status == status)
                 .ToListAsync();
         }
@@ -70,6 +74,7 @@ namespace GestionAcademicaAPI.Repositories.Implementations
                     .ThenInclude(p => p.Escuela)
                 .Include(s => s.Propuestas)
                     .ThenInclude(p => p.Materias)
+                .Include(s => s.Comentarios) // Agregar comentarios
                 .Where(s => s.Fecha >= fechaInicio && s.Fecha <= fechaFin)
                 .ToListAsync();
         }
@@ -107,6 +112,7 @@ namespace GestionAcademicaAPI.Repositories.Implementations
                     .ThenInclude(p => p.Escuela)
                 .Include(s => s.Propuestas)
                     .ThenInclude(p => p.Materias)
+                .Include(s => s.Comentarios) // Agregar comentarios
                 .Where(s => s.IdEstudiante == idEstudiante)
                 .OrderByDescending(s => s.Fecha)
                 .FirstOrDefaultAsync();

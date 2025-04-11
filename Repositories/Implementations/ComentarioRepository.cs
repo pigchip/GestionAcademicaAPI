@@ -35,9 +35,9 @@ namespace GestionAcademicaAPI.Repositories.Implementations
             return await _context.Comentarios.Where(c => c.IdUsuario == idUsuario).ToListAsync();
         }
 
-        public async Task<IEnumerable<Comentario>> GetByMateriaIdAsync(int idMateria)
+        public async Task<IEnumerable<Comentario>> GetBySolicitudIdAsync(int idSolicitud)
         {
-            return await _context.Comentarios.Where(c => c.IdMateria == idMateria).ToListAsync();
+            return await _context.Comentarios.Where(c => c.IdSolicitud == idSolicitud).ToListAsync();
         }
 
         public async Task<IEnumerable<Comentario>> GetByDateRangeAsync(DateTime fechaInicio, DateTime fechaFin)
@@ -68,9 +68,9 @@ namespace GestionAcademicaAPI.Repositories.Implementations
             }
         }
 
-        public async Task<int> CountByMateriaAsync(int idMateria)
+        public async Task<int> CountBySolicitudAsync(int idSolicitud)
         {
-            return await _context.Comentarios.CountAsync(c => c.IdMateria == idMateria);
+            return await _context.Comentarios.CountAsync(c => c.IdSolicitud == idSolicitud);
         }
 
         public async Task<int> CountByUserAsync(int idUsuario)

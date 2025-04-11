@@ -43,5 +43,7 @@ namespace GestionAcademicaAPI.Models
         /// Obtiene o establece la colección de propuestas asociadas a la solicitud.
         /// </summary>
         public ICollection<Propuesta> Propuestas { get; set; } = new List<Propuesta>();
+
+        public ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
     }
 }

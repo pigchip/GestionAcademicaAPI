@@ -42,7 +42,7 @@ namespace GestionAcademicaAPI.Repositories.Interfaces
         /// Actualiza un administrador existente
         /// </summary>
         /// <param name="administrador">Administrador a actualizar</param>
-        Task<Administrador> UpdateAsync(ActualizarAdminRequest administrador);
+        Task<Administrador> UpdateAsync(Administrador administrador);
 
         /// <summary>
         /// Encontrar un administrador por su nombre de usuario 

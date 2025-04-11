@@ -109,7 +109,7 @@ namespace GestionAcademicaAPI.Controllers
                 {
                     return Unauthorized("El usuario no es un administrador.");
                 }
-                return Ok(true);
+                return Ok(administrador);
             }
             catch (Exception ex)
             {
@@ -184,11 +184,12 @@ namespace GestionAcademicaAPI.Controllers
             }
         }
 
+
         /// <summary>
-        /// Actualiza un administrador existente
+        /// Actualiza la contraseña de un administrador
         /// </summary>
-        [HttpPut]
-        public async Task<ActionResult<Administrador>> Update([FromBody] ActualizarAdminRequest request)
+        [HttpPut("update-password")]
+        public async Task<ActionResult> UpdatePassword([FromBody] ActualizarPasswordAdminRequest request)
         {
             if (request == null)
             {
@@ -197,22 +198,126 @@ namespace GestionAcademicaAPI.Controllers
 
             try
             {
-                // Autenticar al usuario
                 var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
                 if (usuario == null)
                 {
                     return Unauthorized("Nombre de usuario o contraseña incorrectos.");
                 }
 
-                // Verificar si el nuevo nombre de usuario ya existe (si se está cambiando)
-                if (request.NuevoUsername != null &&
-                    request.NuevoUsername != usuario.Username &&
-                    await _usuarioService.ExisteNombreUsuarioAsync(request.NuevoUsername, usuario.Id))
+                // Verificar si el usuario es un administrador
+                var administrador = await _administradorService.GetByUserIdAsync(usuario.Id);
+                if (administrador == null)
+                {
+                    return Unauthorized("El usuario no es un administrador.");
+                }
+
+                var usuarioDTO = new UsuarioDTO
+                {
+                    Username = request.Username,
+                    Password = request.NuevaPassword,
+                    EmailPersonal = usuario.EmailPersonal
+                };
+
+                await _usuarioService.ActualizarUsuarioAsync(usuario.Id, usuarioDTO);
+
+                // Notificar cambios al usuario
+                await _usuarioService.EnviarNotificacionActividadAsync(
+                    usuario.Id,
+                    "Se ha actualizado la contraseña de su cuenta de administrador."
+                );
+
+                return Ok("Contraseña actualizada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar la contraseña");
+                return BadRequest($"Error al actualizar la contraseña: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Actualiza el nombre de usuario de un administrador
+        /// </summary>
+        [HttpPut("update-username")]
+        public async Task<ActionResult> UpdateUsername([FromBody] ActualizarUsernameAdminRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("La solicitud es nula.");
+            }
+
+            try
+            {
+                var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
+                if (usuario == null)
+                {
+                    return Unauthorized("Nombre de usuario o contraseña incorrectos.");
+                }
+
+                // Verificar si el usuario es un administrador
+                var administrador = await _administradorService.GetByUserIdAsync(usuario.Id);
+                if (administrador == null)
+                {
+                    return Unauthorized("El usuario no es un administrador.");
+                }
+
+                if (await _usuarioService.ExisteNombreUsuarioAsync(request.NuevoUsername, usuario.Id))
                 {
                     return Conflict($"El nombre de usuario '{request.NuevoUsername}' ya está en uso.");
                 }
 
-                // Verificar si el nuevo correo electrónico ya existe (si se está cambiando)
+                var usuarioDTO = new UsuarioDTO
+                {
+                    Username = request.NuevoUsername,
+                    Password = request.Password,
+                    EmailPersonal = usuario.EmailPersonal
+                };
+
+                await _usuarioService.ActualizarUsuarioAsync(usuario.Id, usuarioDTO);
+
+                // Notificar cambios al usuario
+                await _usuarioService.EnviarNotificacionActividadAsync(
+                    usuario.Id,
+                    "Se ha actualizado el nombre de usuario de su cuenta de administrador."
+                );
+
+                return Ok("Nombre de usuario actualizado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar el nombre de usuario");
+                return BadRequest($"Error al actualizar el nombre de usuario: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Actualiza los detalles de un administrador
+        /// </summary>
+        [HttpPut("update-details")]
+        public async Task<ActionResult<AdministradorDTO>> UpdateDetails([FromBody] ActualizarAdminDetallesRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("La solicitud es nula.");
+            }
+
+            try
+            {
+                // 1. Autenticar al usuario (responsabilidad de autenticación)
+                var usuario = await _usuarioService.AutenticarUsuarioAsync(request.Username, request.Password);
+                if (usuario == null)
+                {
+                    return Unauthorized("Nombre de usuario o contraseña incorrectos.");
+                }
+
+                // 2. Verificar si existe un administrador asociado al usuario (responsabilidad de validación)
+                var administrador = await _administradorService.GetByUserIdAsync(usuario.Id);
+                if (administrador == null)
+                {
+                    return NotFound("Administrador no encontrado");
+                }
+
+                // 3. Verificar si el nuevo correo electrónico ya existe (si se está cambiando)
                 if (request.NuevoEmailPersonal != null &&
                     request.NuevoEmailPersonal != usuario.EmailPersonal &&
                     await _usuarioService.ExisteCorreoElectronicoAsync(request.NuevoEmailPersonal, usuario.Id))
@@ -220,26 +325,23 @@ namespace GestionAcademicaAPI.Controllers
                     return Conflict($"El correo electrónico '{request.NuevoEmailPersonal}' ya está en uso.");
                 }
 
-                // Actualizar los datos del usuario
+                // 4. Actualizar los datos del usuario
                 var usuarioDto = new UsuarioDTO
                 {
-                    Username = request.NuevoUsername ?? usuario.Username,
+                    Username = request.Username,
                     EmailPersonal = request.NuevoEmailPersonal ?? usuario.EmailPersonal,
-                    Password = request.NuevaPassword ?? usuario.Password
+                    Password = request.Password
                 };
 
-                // Actualizar usuario
                 await _usuarioService.ActualizarUsuarioAsync(usuario.Id, usuarioDto);
 
-                // Notificar cambios al usuario
+                // 6. Notificar cambios al usuario
                 await _usuarioService.EnviarNotificacionActividadAsync(
                     usuario.Id,
-                    "Se ha actualizado la información de su cuenta de administrador."
+                    "Se han actualizado los detalles de su cuenta de administrador."
                 );
 
-                var admin = await _administradorService.GetByUserIdAsync(usuario.Id);
-
-                return Ok(admin);
+                return Ok(usuarioDto);
             }
             catch (KeyNotFoundException ex)
             {
@@ -251,8 +353,8 @@ namespace GestionAcademicaAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al actualizar administrador");
-                return BadRequest($"Error al actualizar el administrador: {ex.Message}");
+                _logger.LogError(ex, "Error al actualizar los detalles del administrador");
+                return BadRequest($"Error al actualizar los detalles del administrador: {ex.Message}");
             }
         }
 
@@ -274,8 +376,7 @@ namespace GestionAcademicaAPI.Controllers
                 // Eliminar el administrador
                 await _administradorService.DeleteAsync(id);
 
-                // También podríamos eliminar al usuario si es necesario
-                // await _usuarioService.EliminarUsuarioAsync(administrador.IdUsuario);
+                await _usuarioService.EliminarUsuarioAsync(administrador.IdUsuario);
 
                 return NoContent();
             }

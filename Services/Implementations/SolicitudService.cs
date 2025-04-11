@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations; // For attributes like [Required]
+using System.ComponentModel.DataAnnotations.Schema; // For database-related attributes
+using System.Collections.ObjectModel; // For collection types like ObservableCollection
 
 namespace GestionAcademicaAPI.Services.Implementations
 {
@@ -208,6 +211,17 @@ namespace GestionAcademicaAPI.Services.Implementations
                                 Status = m.Status
                             }).ToList()
                         }
+                    }).ToList()
+                },
+                Comentarios = new ComentarioList // Agregar comentarios
+                {
+                    Values = solicitud.Comentarios.Select(c => new ComentarioResponseDTO
+                    {
+                        Id = c.Id,
+                        Contenido = c.Contenido,
+                        IdSolicitud = c.IdSolicitud,
+                        IdUsuario = c.IdUsuario,
+                        Fecha = c.Fecha
                     }).ToList()
                 }
             };

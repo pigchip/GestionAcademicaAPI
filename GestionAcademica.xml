@@ -42,9 +42,19 @@
             Obtiene todos los administradores
             </summary>
         </member>
-        <member name="M:GestionAcademicaAPI.Controllers.AdministradorController.Update(GestionAcademicaAPI.Helpers.ActualizarAdminRequest)">
+        <member name="M:GestionAcademicaAPI.Controllers.AdministradorController.UpdatePassword(GestionAcademicaAPI.DTOs.ActualizarPasswordAdminRequest)">
             <summary>
-            Actualiza un administrador existente
+            Actualiza la contraseña de un administrador
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Controllers.AdministradorController.UpdateUsername(GestionAcademicaAPI.DTOs.ActualizarUsernameAdminRequest)">
+            <summary>
+            Actualiza el nombre de usuario de un administrador
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Controllers.AdministradorController.UpdateDetails(GestionAcademicaAPI.DTOs.ActualizarAdminDetallesRequest)">
+            <summary>
+            Actualiza los detalles de un administrador
             </summary>
         </member>
         <member name="M:GestionAcademicaAPI.Controllers.AdministradorController.Delete(System.Int32)">
@@ -62,12 +72,13 @@
             Controlador para gestionar las operaciones relacionadas con los estudiantes.
             </summary>
         </member>
-        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.#ctor(GestionAcademicaAPI.Services.Interfaces.IEstudianteService,GestionAcademicaAPI.Services.Interfaces.IUsuarioService,Microsoft.Extensions.Logging.ILogger{GestionAcademicaAPI.Controllers.EstudianteController})">
+        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.#ctor(GestionAcademicaAPI.Services.Interfaces.IEstudianteService,GestionAcademicaAPI.Services.Interfaces.IUsuarioService,GestionAcademicaAPI.Services.Interfaces.ISolicitudService,Microsoft.Extensions.Logging.ILogger{GestionAcademicaAPI.Controllers.EstudianteController})">
             <summary>
             Inicializa una nueva instancia de la clase <see cref="T:GestionAcademicaAPI.Controllers.EstudianteController"/>
             </summary>
             <param name="estudianteService">El servicio de estudiantes</param>
             <param name="usuarioService">El servicio de usuarios</param>
+            <param name="solicitudService">El servicio de solicitudes</param>
             <param name="logger">El registrador de eventos</param>
         </member>
         <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.Create(GestionAcademicaAPI.Helpers.CrearEstudianteRequest)">
@@ -95,6 +106,11 @@
             Obtiene todos los estudiantes
             </summary>
         </member>
+        <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.GetAllDetail">
+            <summary>
+            Obtiene todos los estudiantes
+            </summary>
+        </member>
         <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.ExistsForUser(System.Int32)">
             <summary>
             Verifica si existe un estudiante para un usuario específico
@@ -102,7 +118,7 @@
         </member>
         <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.Delete(System.Int32)">
             <summary>
-            Elimina un estudiante
+            Elimina un estudiante y sus solicitudes relacionadas
             </summary>
         </member>
         <member name="M:GestionAcademicaAPI.Controllers.EstudianteController.UpdateDetails(GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest)">
@@ -250,6 +266,66 @@
             La nueva contraseña.
             </summary>
         </member>
+        <member name="T:GestionAcademicaAPI.DTOs.ActualizarAdminDetallesRequest">
+            <summary>
+            Representa una solicitud para actualizar los detalles de un administrador
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.DTOs.ActualizarAdminDetallesRequest.Username">
+            <summary>
+            El nombre de usuario para autenticar
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.DTOs.ActualizarAdminDetallesRequest.Password">
+            <summary>
+            La contraseña para autenticar
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.DTOs.ActualizarAdminDetallesRequest.NuevoEmailPersonal">
+            <summary>
+            El nuevo correo electrónico personal
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.DTOs.ActualizarPasswordAdminRequest">
+            <summary>
+            Representa una solicitud para actualizar la contraseña de un usuario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.DTOs.ActualizarPasswordAdminRequest.Username">
+            <summary>
+            El nombre de usuario para autenticar
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.DTOs.ActualizarPasswordAdminRequest.Password">
+            <summary>
+            La contraseña actual para autenticar
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.DTOs.ActualizarPasswordAdminRequest.NuevaPassword">
+            <summary>
+            La nueva contraseña
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.DTOs.ActualizarUsernameAdminRequest">
+            <summary>
+            Representa una solicitud para actualizar el nombre de usuario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.DTOs.ActualizarUsernameAdminRequest.Username">
+            <summary>
+            El nombre de usuario actual para autenticar
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.DTOs.ActualizarUsernameAdminRequest.Password">
+            <summary>
+            La contraseña para autenticar
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.DTOs.ActualizarUsernameAdminRequest.NuevoUsername">
+            <summary>
+            El nuevo nombre de usuario
+            </summary>
+        </member>
         <member name="T:GestionAcademicaAPI.DTOs.AdministradorDTO">
             <summary>
             DTO para representar información de un administrador.
@@ -295,9 +371,9 @@
             Obtiene o establece el contenido del comentario.
             </summary>
         </member>
-        <member name="P:GestionAcademicaAPI.Dtos.ComentarioDTO.IdMateria">
+        <member name="P:GestionAcademicaAPI.Dtos.ComentarioDTO.IdSolicitud">
             <summary>
-            Obtiene o establece el identificador de la materia asociada al comentario.
+            Obtiene o establece el identificador de la solicitud asociada al comentario.
             </summary>
         </member>
         <member name="P:GestionAcademicaAPI.Dtos.ComentarioDTO.IdUsuario">
@@ -323,6 +399,221 @@
         <member name="P:GestionAcademicaAPI.Dtos.EscuelaDTO.Propuestas">
             <summary>
             Obtiene o establece la colección de propuestas asociadas a la escuela.
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO">
+            <summary>
+            DTO para representar un estudiante con todos sus datos relacionados
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.Id">
+            <summary>
+            Identificador único del estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.Nombre">
+            <summary>
+            Nombre del estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.ApellidoPat">
+            <summary>
+            Apellido paterno del estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.ApellidoMat">
+            <summary>
+            Apellido materno del estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.EmailEscolar">
+            <summary>
+            Correo electrónico escolar del estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.InePdf">
+            <summary>
+            Archivo PDF del INE del estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.Boleta">
+            <summary>
+            Número de boleta del estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.Carrera">
+            <summary>
+            Carrera del estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.IdUsuario">
+            <summary>
+            Identificador del usuario asociado
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.Usuario">
+            <summary>
+            Información básica del usuario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.Solicitudes">
+            <summary>
+            Lista de solicitudes del estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EstudianteDetalladoDTO.Materias">
+            <summary>
+            Lista de materias del estudiante
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.UsuarioInfoDTO">
+            <summary>
+            DTO para información básica del usuario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.UsuarioInfoDTO.Id">
+            <summary>
+            Identificador único del usuario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.UsuarioInfoDTO.Username">
+            <summary>
+            Nombre de usuario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.UsuarioInfoDTO.EmailPersonal">
+            <summary>
+            Correo electrónico personal
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.SolicitudInfoDTO">
+            <summary>
+            DTO para información básica de una solicitud
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.SolicitudInfoDTO.Id">
+            <summary>
+            Identificador único de la solicitud
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.SolicitudInfoDTO.Status">
+            <summary>
+            Estado de la solicitud
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.SolicitudInfoDTO.Fecha">
+            <summary>
+            Fecha de la solicitud
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.SolicitudInfoDTO.Propuestas">
+            <summary>
+            Lista de propuestas asociadas a la solicitud
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.SolicitudInfoDTO.Comentarios">
+            <summary>
+            Lista de comentarios asociados a la solicitud
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.PropuestaInfoDTO">
+            <summary>
+            DTO para información básica de una propuesta
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.PropuestaInfoDTO.Id">
+            <summary>
+            Identificador único de la propuesta
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.PropuestaInfoDTO.Status">
+            <summary>
+            Estado de la propuesta
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.PropuestaInfoDTO.Fecha">
+            <summary>
+            Fecha de la propuesta
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.PropuestaInfoDTO.Escuela">
+            <summary>
+            Información de la escuela asociada
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.PropuestaInfoDTO.Materias">
+            <summary>
+            Lista de materias asociadas a la propuesta
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.EscuelaInfoDTO">
+            <summary>
+            DTO para información básica de una escuela
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EscuelaInfoDTO.Id">
+            <summary>
+            Identificador único de la escuela
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.EscuelaInfoDTO.Nombre">
+            <summary>
+            Nombre de la escuela
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.MateriaInfoDTO">
+            <summary>
+            DTO para información básica de una materia
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.MateriaInfoDTO.Id">
+            <summary>
+            Identificador único de la materia
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.MateriaInfoDTO.NombreMateriaEscom">
+            <summary>
+            Nombre de la materia en ESCOM
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.MateriaInfoDTO.NombreMateriaForanea">
+            <summary>
+            Nombre de la materia en la institución foránea
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.MateriaInfoDTO.TemarioMateriaForaneaUrl">
+            <summary>
+            URL del temario de la materia foránea
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.MateriaInfoDTO.Status">
+            <summary>
+            Estado de la materia
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.ComentarioInfoDTO">
+            <summary>
+            DTO para información básica de un comentario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.ComentarioInfoDTO.Id">
+            <summary>
+            Identificador único del comentario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.ComentarioInfoDTO.Contenido">
+            <summary>
+            Contenido del comentario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.ComentarioInfoDTO.Fecha">
+            <summary>
+            Fecha del comentario
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.ComentarioInfoDTO.Usuario">
+            <summary>
+            Información básica del usuario que realizó el comentario
             </summary>
         </member>
         <member name="T:GestionAcademicaAPI.Dtos.EstudianteDTO">
@@ -438,6 +729,36 @@
         <member name="P:GestionAcademicaAPI.Dtos.PropuestaDTO.Materias">
             <summary>
             Obtiene o establece la colección de materias asociadas a la propuesta.
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.PropuestaInfoDto">
+            <summary>
+            DTO de respuesta para información de una propuesta.
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.MateriasPropuestaList">
+            <summary>
+            Clase contenedora para la lista de materias de una propuesta.
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.MateriaInfoDto">
+            <summary>
+            DTO de respuesta para información de una materia en una propuesta.
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.PropuestaUpdateDto">
+            <summary>
+            DTO para actualizar el estado de una propuesta.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.PropuestaUpdateDto.IdPropuesta">
+            <summary>
+            Identificador único de la propuesta a actualizar.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.PropuestaUpdateDto.Status">
+            <summary>
+            Nuevo estado de la propuesta.
             </summary>
         </member>
         <member name="T:GestionAcademicaAPI.Dtos.RegistroEnvioCorreoDTO">
@@ -575,6 +896,11 @@
             Lista de propuestas asociadas a la solicitud.
             </summary>
         </member>
+        <member name="P:GestionAcademicaAPI.Dtos.SolicitudResponseDto.Comentarios">
+            <summary>
+            Lista de comentarios asociados a la solicitud.
+            </summary>
+        </member>
         <member name="T:GestionAcademicaAPI.Dtos.PropuestaList">
             <summary>
             Clase contenedora para la lista de propuestas con $values.
@@ -655,6 +981,41 @@
             Estado actual de la materia.
             </summary>
         </member>
+        <member name="T:GestionAcademicaAPI.Dtos.ComentarioList">
+            <summary>
+            Clase auxiliar para la lista de comentarios.
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Dtos.ComentarioResponseDTO">
+            <summary>
+            DTO para representar un comentario.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.ComentarioResponseDTO.Id">
+            <summary>
+            Identificador único del comentario.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.ComentarioResponseDTO.Contenido">
+            <summary>
+            Contenido del comentario.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.ComentarioResponseDTO.IdSolicitud">
+            <summary>
+            Identificador de la solicitud asociada al comentario.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.ComentarioResponseDTO.IdUsuario">
+            <summary>
+            Identificador del usuario que realizó el comentario.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Dtos.ComentarioResponseDTO.Fecha">
+            <summary>
+            Fecha de creación del comentario.
+            </summary>
+        </member>
         <member name="T:GestionAcademicaAPI.Dtos.SolicitudUpdateDto">
             <summary>
             DTO para actualizar el estado de una solicitud.
@@ -669,233 +1030,6 @@
             <summary>
             Nuevo estado de la solicitud.
             </summary>
-        </member>
-        <member name="T:GestionAcademicaAPI.Helpers.TipoCorreoElectronico">
-            <summary>
-            Tipos de correos electrónicos que se pueden enviar
-            </summary>
-        </member>
-        <member name="F:GestionAcademicaAPI.Helpers.TipoCorreoElectronico.RestablecimientoContraseña">
-            <summary>
-            Restablecimiento de contraseña
-            </summary>
-        </member>
-        <member name="F:GestionAcademicaAPI.Helpers.TipoCorreoElectronico.Bienvenida">
-            <summary>
-            Bienvenida
-            </summary>
-        </member>
-        <member name="F:GestionAcademicaAPI.Helpers.TipoCorreoElectronico.ConfirmacionRegistro">
-            <summary>
-            Confirmación de registro
-            </summary>
-        </member>
-        <member name="F:GestionAcademicaAPI.Helpers.TipoCorreoElectronico.CambioContraseña">
-            <summary>
-            Cambio de contraseña
-            </summary>
-        </member>
-        <member name="F:GestionAcademicaAPI.Helpers.TipoCorreoElectronico.NotificacionActividad">
-            <summary>
-            Notificación de actividad
-            </summary>
-        </member>
-        <member name="T:GestionAcademicaAPI.Helpers.Helpers">
-            <summary>
-            Provides helper methods for security-related functions.
-            </summary>
-        </member>
-        <member name="M:GestionAcademicaAPI.Helpers.Helpers.HashPassword(System.String)">
-            <summary>
-            Hashes the specified password using SHA-256.
-            </summary>
-            <param name="password">The password to hash.</param>
-            <returns>The hashed password as a base64-encoded string.</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Helpers.Helpers.VerifyPassword(System.String,System.String)">
-            <summary>
-            Verifies that the specified password matches the hashed password.
-            </summary>
-            <param name="password">The password to verify.</param>
-            <param name="hashedPassword">The hashed password to compare against.</param>
-            <returns><c>true</c> if the password matches the hashed password; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="T:GestionAcademicaAPI.Helpers.CrearUsuarioRequest">
-            <summary>
-            Representa una solicitud para crear un nuevo usuario.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearUsuarioRequest.Username">
-            <summary>
-            El nombre de usuario.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearUsuarioRequest.EmailPersonal">
-            <summary>
-            El correo electrónico personal.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearUsuarioRequest.Password">
-            <summary>
-            La contraseña.
-            </summary>
-        </member>
-        <member name="T:GestionAcademicaAPI.Helpers.LoginRequest">
-            <summary>
-            Representa una solicitud de inicio de sesión.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.LoginRequest.Username">
-            <summary>
-            El nombre de usuario.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.LoginRequest.Password">
-            <summary>
-            La contraseña.
-            </summary>
-        </member>
-        <member name="T:GestionAcademicaAPI.Helpers.ActualizarAdminRequest">
-            <summary>
-            Actualizar Admin
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarAdminRequest.Id">
-            <summary>
-            El ID de Administrador.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarAdminRequest.Username">
-            <summary>
-            El username de Administrador.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarAdminRequest.Password">
-            <summary>
-            La password de Administrador
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarAdminRequest.NuevoUsername">
-            <summary>
-            El nuevo nombre de Usuario
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarAdminRequest.NuevaPassword">
-            <summary>
-            La nueva Password
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarAdminRequest.NuevoEmailPersonal">
-            <summary>
-            El correo electrónico personal.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Username">
-            <summary>
-            El nombre de usuario.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Password">
-            <summary>
-            La contraseña.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.EmailEscolar">
-            <summary>
-            El correo electrónico escolar.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.EmailPersonal">
-            <summary>
-            El correo electrónico personal.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Nombre">
-            <summary>
-            El nombre del estudiante.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.ApellidoPaterno">
-            <summary>
-            El apellido paterno del estudiante.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.ApellidoMaterno">
-            <summary>
-            El apellido materno del estudiante.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Boleta">
-            <summary>
-            El número de boleta.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Carrera">
-            <summary>
-            El nombre de la carrera del estudiante.
-            </summary>
-        </member>
-        <member name="T:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest">
-            <summary>
-            Actualizar Estudiante
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.Username">
-            <summary>
-            El username de Estudiante.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.Password">
-            <summary>
-            La password de Estudiante
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoEmailEscolar">
-            <summary>
-            El nuevo correo electrónico escolar.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoEmailPersonal">
-            <summary>
-            El nuevo correo electrónico personal.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoBoleta">
-            <summary>
-            El nuevo número de boleta.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoNombre">
-            <summary>
-            El nuevo nombre del estudiante.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoApellidoPaterno">
-            <summary>
-            El nuevo apellido paterno del estudiante.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoApellidoMaterno">
-            <summary>
-            El nuevo apellido materno del estudiante.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevaCarrera">
-            <summary>
-            El nuevo nombre de la carrera del estudiante.
-            </summary>
-        </member>
-        <member name="T:GestionAcademicaAPI.Migrations.InitialCreate">
-            <inheritdoc />
-        </member>
-        <member name="M:GestionAcademicaAPI.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:GestionAcademicaAPI.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:GestionAcademicaAPI.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
         </member>
         <member name="T:GestionAcademicaAPI.Models.Administrador">
             <summary>
@@ -932,9 +1066,9 @@
             Obtiene o establece el contenido del comentario.
             </summary>
         </member>
-        <member name="P:GestionAcademicaAPI.Models.Comentario.IdMateria">
+        <member name="P:GestionAcademicaAPI.Models.Comentario.IdSolicitud">
             <summary>
-            Obtiene o establece el identificador de la materia asociada al comentario.
+            Obtiene o establece el identificador de la solicitud asociada al comentario.
             </summary>
         </member>
         <member name="P:GestionAcademicaAPI.Models.Comentario.IdUsuario">
@@ -947,9 +1081,9 @@
             Obtiene o establece la fecha en que se realizó el comentario.
             </summary>
         </member>
-        <member name="P:GestionAcademicaAPI.Models.Comentario.Materia">
+        <member name="P:GestionAcademicaAPI.Models.Comentario.Solicitud">
             <summary>
-            Obtiene o establece la materia asociada al comentario.
+            Obtiene o establece la solicitud asociada al comentario.
             </summary>
         </member>
         <member name="P:GestionAcademicaAPI.Models.Comentario.Usuario">
@@ -1090,11 +1224,6 @@
         <member name="P:GestionAcademicaAPI.Models.Materia.Propuesta">
             <summary>
             Obtiene o establece la colección de propuestas de materia asociadas.
-            </summary>
-        </member>
-        <member name="P:GestionAcademicaAPI.Models.Materia.Comentarios">
-            <summary>
-            Obtiene o establece la colección de comentarios asociados a la materia.
             </summary>
         </member>
         <member name="T:GestionAcademicaAPI.Models.Propuesta">
@@ -1272,6 +1401,215 @@
             Obtiene o establece la colección de intentos de envío de correo realizados por el usuario.
             </summary>
         </member>
+        <member name="T:GestionAcademicaAPI.Helpers.TipoCorreoElectronico">
+            <summary>
+            Tipos de correos electrónicos que se pueden enviar
+            </summary>
+        </member>
+        <member name="F:GestionAcademicaAPI.Helpers.TipoCorreoElectronico.RestablecimientoContraseña">
+            <summary>
+            Restablecimiento de contraseña
+            </summary>
+        </member>
+        <member name="F:GestionAcademicaAPI.Helpers.TipoCorreoElectronico.Bienvenida">
+            <summary>
+            Bienvenida
+            </summary>
+        </member>
+        <member name="F:GestionAcademicaAPI.Helpers.TipoCorreoElectronico.ConfirmacionRegistro">
+            <summary>
+            Confirmación de registro
+            </summary>
+        </member>
+        <member name="F:GestionAcademicaAPI.Helpers.TipoCorreoElectronico.CambioContraseña">
+            <summary>
+            Cambio de contraseña
+            </summary>
+        </member>
+        <member name="F:GestionAcademicaAPI.Helpers.TipoCorreoElectronico.NotificacionActividad">
+            <summary>
+            Notificación de actividad
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Helpers.Helpers">
+            <summary>
+            Provides helper methods for security-related functions.
+            </summary>
+        </member>
+        <member name="M:GestionAcademicaAPI.Helpers.Helpers.HashPassword(System.String)">
+            <summary>
+            Hashes the specified password using SHA-256.
+            </summary>
+            <param name="password">The password to hash.</param>
+            <returns>The hashed password as a base64-encoded string.</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Helpers.Helpers.VerifyPassword(System.String,System.String)">
+            <summary>
+            Verifies that the specified password matches the hashed password.
+            </summary>
+            <param name="password">The password to verify.</param>
+            <param name="hashedPassword">The hashed password to compare against.</param>
+            <returns><c>true</c> if the password matches the hashed password; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="T:GestionAcademicaAPI.Helpers.CrearUsuarioRequest">
+            <summary>
+            Representa una solicitud para crear un nuevo usuario.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearUsuarioRequest.Username">
+            <summary>
+            El nombre de usuario.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearUsuarioRequest.EmailPersonal">
+            <summary>
+            El correo electrónico personal.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearUsuarioRequest.Password">
+            <summary>
+            La contraseña.
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Helpers.LoginRequest">
+            <summary>
+            Representa una solicitud de inicio de sesión.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.LoginRequest.Username">
+            <summary>
+            El nombre de usuario.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.LoginRequest.Password">
+            <summary>
+            La contraseña.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Username">
+            <summary>
+            El nombre de usuario.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Password">
+            <summary>
+            La contraseña.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.EmailEscolar">
+            <summary>
+            El correo electrónico escolar.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.EmailPersonal">
+            <summary>
+            El correo electrónico personal.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Nombre">
+            <summary>
+            El nombre del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.ApellidoPaterno">
+            <summary>
+            El apellido paterno del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.ApellidoMaterno">
+            <summary>
+            El apellido materno del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Boleta">
+            <summary>
+            El número de boleta.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.CrearEstudianteRequest.Carrera">
+            <summary>
+            El nombre de la carrera del estudiante.
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest">
+            <summary>
+            Actualizar Estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.Username">
+            <summary>
+            El username de Estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.Password">
+            <summary>
+            La password de Estudiante
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoInePdf">
+            <summary>
+            URL del PDF
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoEmailEscolar">
+            <summary>
+            El nuevo correo electrónico escolar.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoEmailPersonal">
+            <summary>
+            El nuevo correo electrónico personal.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoBoleta">
+            <summary>
+            El nuevo número de boleta.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoNombre">
+            <summary>
+            El nuevo nombre del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoApellidoPaterno">
+            <summary>
+            El nuevo apellido paterno del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevoApellidoMaterno">
+            <summary>
+            El nuevo apellido materno del estudiante.
+            </summary>
+        </member>
+        <member name="P:GestionAcademicaAPI.Helpers.ActualizarEstudianteRequest.NuevaCarrera">
+            <summary>
+            El nuevo nombre de la carrera del estudiante.
+            </summary>
+        </member>
+        <member name="T:GestionAcademicaAPI.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:GestionAcademicaAPI.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GestionAcademicaAPI.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GestionAcademicaAPI.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:GestionAcademicaAPI.Migrations.ConfigureComentarioCascadeDelete">
+            <inheritdoc />
+        </member>
+        <member name="M:GestionAcademicaAPI.Migrations.ConfigureComentarioCascadeDelete.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GestionAcademicaAPI.Migrations.ConfigureComentarioCascadeDelete.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GestionAcademicaAPI.Migrations.ConfigureComentarioCascadeDelete.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:GestionAcademicaAPI.Repositories.Implementations.AdministradorRepository">
             <summary>
             Repositorio para gestionar entidades de tipo Administrador
@@ -1320,7 +1658,7 @@
             <param name="administrador">Administrador a verificar</param>
             <returns>True si existe un duplicado, False en caso contrario</returns>
         </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Implementations.AdministradorRepository.UpdateAsync(GestionAcademicaAPI.Helpers.ActualizarAdminRequest)">
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.AdministradorRepository.UpdateAsync(GestionAcademicaAPI.Models.Administrador)">
             <summary>
             Actualiza un administrador existente
             </summary>
@@ -1427,6 +1765,20 @@
             </summary>
             <param name="id">Identificador del estudiante a eliminar</param>
         </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.ExisteCorreoElectronicoPersonalAsync(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Verifica si existe un estudiante con el correo electrónico personal proporcionado
+            </summary>
+            <param name="correoElectronico">Correo electrónico personal</param>
+            <param name="idExcluir">Identificador del estudiante a excluir de la verificación</param>
+            <returns>True si existe, False en caso contrario</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Repositories.Implementations.EstudianteRepository.GetAllWithDetailsAsync">
+            <summary>
+            Obtiene todos los estudiantes incluyendo todos sus datos relacionados
+            </summary>
+            <returns>IEnumerable de estudiantes con todas sus entidades relacionadas</returns>
+        </member>
         <member name="T:GestionAcademicaAPI.Repositories.Implementations.UsuarioRepository">
             <summary>
             Repositorio para gestionar entidades de tipo Usuario.
@@ -1517,7 +1869,7 @@
             </summary>
             <returns>IEnumerable de administradores</returns>
         </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IAdministradorRepository.UpdateAsync(GestionAcademicaAPI.Helpers.ActualizarAdminRequest)">
+        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IAdministradorRepository.UpdateAsync(GestionAcademicaAPI.Models.Administrador)">
             <summary>
             Actualiza un administrador existente
             </summary>
@@ -1580,12 +1932,12 @@
             <param name="idUsuario">Identificador del usuario</param>
             <returns>Comentarios del usuario</returns>
         </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IComentarioRepository.GetByMateriaIdAsync(System.Int32)">
+        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IComentarioRepository.GetBySolicitudIdAsync(System.Int32)">
             <summary>
-            Obtiene comentarios por ID de materia
+            Obtiene comentarios por ID de solicitud
             </summary>
-            <param name="idMateria">Identificador de la materia</param>
-            <returns>Comentarios de la materia</returns>
+            <param name="idSolicitud">Identificador de la solicitud</param>
+            <returns>Comentarios de la solicitud</returns>
         </member>
         <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IComentarioRepository.GetByDateRangeAsync(System.DateTime,System.DateTime)">
             <summary>
@@ -1614,11 +1966,11 @@
             </summary>
             <param name="id">Identificador del comentario a eliminar</param>
         </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IComentarioRepository.CountByMateriaAsync(System.Int32)">
+        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IComentarioRepository.CountBySolicitudAsync(System.Int32)">
             <summary>
-            Cuenta el número de comentarios para una materia específica
+            Cuenta el número de comentarios para una solicitud específica
             </summary>
-            <param name="idMateria">Identificador de la materia</param>
+            <param name="idSolicitud">Identificador de la solicitud</param>
             <returns>Número de comentarios en la materia</returns>
         </member>
         <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IComentarioRepository.CountByUserAsync(System.Int32)">
@@ -1770,213 +2122,19 @@
             </summary>
             <param name="id">Identificador del estudiante a eliminar</param>
         </member>
-        <member name="T:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository">
+        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.ExisteCorreoElectronicoPersonalAsync(System.String,System.Nullable{System.Int32})">
             <summary>
-            Interfaz para el repositorio de Materias
+            Verifica si existe un estudiante con el correo electrónico personal proporcionado
             </summary>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.GetAllAsync">
-            <summary>
-            Obtiene todas las materias
-            </summary>
-            <returns>IEnumerable de materias</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.GetByIdAsync(System.Int32)">
-            <summary>
-            Obtiene una materia por su ID
-            </summary>
-            <param name="id">Identificador de la materia</param>
-            <returns>Materia encontrada o null</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.FindAsync(System.Linq.Expressions.Expression{System.Func{GestionAcademicaAPI.Models.Materia,System.Boolean}})">
-            <summary>
-            Busca materias según un criterio específico
-            </summary>
-            <param name="predicate">Condición de búsqueda</param>
-            <returns>Materias que cumplen el criterio</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.GetByPropuestaIdAsync(System.Int32)">
-            <summary>
-            Obtiene maetrias por ID
-            </summary>
-            <param name="idPropuesta"></param>
-            <returns></returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.GetByEstudianteIdAsync(System.Int32)">
-            <summary>
-            Obtiene materias por ID de estudiante
-            </summary>
-            <param name="idEstudiante">Identificador del estudiante</param>
-            <returns>Materias del estudiante</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.GetByNombreMateriaEscomAsync(System.String)">
-            <summary>
-            Obtiene materias por nombre de materia ESCOM
-            </summary>
-            <param name="nombreMateriaEscom">Nombre de la materia ESCOM</param>
-            <returns>Materias con el nombre especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.GetByNombreMateriaForaneaAsync(System.String)">
-            <summary>
-            Obtiene materias por nombre de materia foránea
-            </summary>
-            <param name="nombreMateriaForanea">Nombre de la materia foránea</param>
-            <returns>Materias con el nombre especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.GetByStatusAsync(System.String)">
-            <summary>
-            Obtiene materias por status
-            </summary>
-            <param name="status">Status de la materia</param>
-            <returns>Materias con el status especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.AddAsync(GestionAcademicaAPI.Models.Materia)">
-            <summary>
-            Agrega una nueva materia
-            </summary>
-            <param name="materia">Materia a agregar</param>
-            <returns>Materia agregada</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.UpdateAsync(GestionAcademicaAPI.Models.Materia)">
-            <summary>
-            Actualiza una materia existente
-            </summary>
-            <param name="materia">Materia a actualizar</param>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.DeleteAsync(System.Int32)">
-            <summary>
-            Elimina una materia
-            </summary>
-            <param name="id">Identificador de la materia a eliminar</param>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.CountByEstudianteAsync(System.Int32)">
-            <summary>
-            Cuenta el número de materias por estudiante
-            </summary>
-            <param name="idEstudiante">Identificador del estudiante</param>
-            <returns>Número de materias del estudiante</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.CountByStatusAsync(System.String)">
-            <summary>
-            Cuenta el número de materias por status
-            </summary>
-            <param name="status">Status de la materia</param>
-            <returns>Número de materias con el status especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.ExistsByNombreMateriaEscomAsync(System.String)">
-            <summary>
-            Verifica si existe una materia con el nombre de materia ESCOM
-            </summary>
-            <param name="nombreMateriaEscom">Nombre de la materia ESCOM</param>
+            <param name="correoElectronico">Correo electrónico personal</param>
+            <param name="idExcluir">Identificador del estudiante a excluir de la verificación</param>
             <returns>True si existe, False en caso contrario</returns>
         </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IMateriaRepository.ExistsByNombreMateriaForaneaAsync(System.String)">
+        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IEstudianteRepository.GetAllWithDetailsAsync">
             <summary>
-            Verifica si existe una materia con el nombre de materia foránea
+            Obtiene todos los estudiantes incluyendo todos sus datos relacionados
             </summary>
-            <param name="nombreMateriaForanea">Nombre de la materia foránea</param>
-            <returns>True si existe, False en caso contrario</returns>
-        </member>
-        <member name="T:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository">
-            <summary>
-            Interfaz para el repositorio de Propuestas
-            </summary>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.GetAllAsync">
-            <summary>
-            Obtiene todas las propuestas
-            </summary>
-            <returns>IEnumerable de propuestas</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.GetByIdAsync(System.Int32)">
-            <summary>
-            Obtiene una propuesta por su ID
-            </summary>
-            <param name="id">Identificador de la propuesta</param>
-            <returns>Propuesta encontrada o null</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.FindAsync(System.Linq.Expressions.Expression{System.Func{GestionAcademicaAPI.Models.Propuesta,System.Boolean}})">
-            <summary>
-            Busca propuestas según un criterio específico
-            </summary>
-            <param name="predicate">Condición de búsqueda</param>
-            <returns>Propuestas que cumplen el criterio</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.GetBySolicitudIdAsync(System.Int32)">
-            <summary>
-            Obtiene propuestas por ID de solicitud
-            </summary>
-            <param name="idSolicitud">Identificador de la solicitud</param>
-            <returns>Propuestas de la solicitud</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.GetByEscuelaIdAsync(System.Int32)">
-            <summary>
-            Obtiene propuestas por ID de escuela
-            </summary>
-            <param name="idEscuela">Identificador de la escuela</param>
-            <returns>Propuestas de la escuela</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.GetByStatusAsync(System.String)">
-            <summary>
-            Obtiene propuestas por status
-            </summary>
-            <param name="status">Status de la propuesta</param>
-            <returns>Propuestas con el status especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.GetByDateRangeAsync(System.DateTime,System.DateTime)">
-            <summary>
-            Obtiene propuestas dentro de un rango de fechas
-            </summary>
-            <param name="fechaInicio">Fecha de inicio</param>
-            <param name="fechaFin">Fecha de fin</param>
-            <returns>Propuestas en el rango de fechas</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.AddAsync(GestionAcademicaAPI.Models.Propuesta)">
-            <summary>
-            Agrega una nueva propuesta
-            </summary>
-            <param name="propuesta">Propuesta a agregar</param>
-            <returns>Propuesta agregada</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.UpdateAsync(GestionAcademicaAPI.Models.Propuesta)">
-            <summary>
-            Actualiza una propuesta existente
-            </summary>
-            <param name="propuesta">Propuesta a actualizar</param>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.DeleteAsync(System.Int32)">
-            <summary>
-            Elimina una propuesta
-            </summary>
-            <param name="id">Identificador de la propuesta a eliminar</param>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.CountBySolicitudAsync(System.Int32)">
-            <summary>
-            Cuenta el número de propuestas por solicitud
-            </summary>
-            <param name="idSolicitud">Identificador de la solicitud</param>
-            <returns>Número de propuestas de la solicitud</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.CountByEscuelaAsync(System.Int32)">
-            <summary>
-            Cuenta el número de propuestas por escuela
-            </summary>
-            <param name="idEscuela">Identificador de la escuela</param>
-            <returns>Número de propuestas de la escuela</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.CountByStatusAsync(System.String)">
-            <summary>
-            Cuenta el número de propuestas por status
-            </summary>
-            <param name="status">Status de la propuesta</param>
-            <returns>Número de propuestas con el status especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Repositories.Interfaces.IPropuestaRepository.GetLastPropuestaBySolicitudAsync(System.Int32)">
-            <summary>
-            Obtiene la última propuesta de una solicitud
-            </summary>
-            <param name="idSolicitud">Identificador de la solicitud</param>
-            <returns>Última propuesta de la solicitud o null</returns>
+            <returns>IEnumerable de estudiantes con todas sus entidades relacionadas</returns>
         </member>
         <member name="T:GestionAcademicaAPI.Repositories.Interfaces.ISolicitudRepository">
             <summary>
@@ -2157,6 +2315,12 @@
             </summary>
             <param name="escuelaRepository">Repositorio de escuelas</param>
         </member>
+        <member name="M:GestionAcademicaAPI.Services.Implementations.EstudianteService.GetAllDetailAsync">
+            <summary>
+            Obtiene todos los estudiantes con sus datos relacionados (Usuario, Solicitudes, Materias)
+            </summary>
+            <returns>IEnumerable de estudiantes con todas sus entidades relacionadas</returns>
+        </member>
         <member name="M:GestionAcademicaAPI.Services.Implementations.EstudianteService.ExistsByBoletaAsync(System.Int32)">
             <summary>
             Verifica si existe un estudiante con la boleta proporcionada
@@ -2184,6 +2348,9 @@
             </summary>
             <param name="carrera">Carrera de estudiante</param>
             <returns>Estudiante encontrado o null</returns>
+        </member>
+        <member name="M:GestionAcademicaAPI.Services.Implementations.EstudianteService.ExisteCorreoElectronicoPersonalAsync(System.String,System.Nullable{System.Int32})">
+            <inheritdoc/>
         </member>
         <member name="T:GestionAcademicaAPI.Services.Implementations.UsuarioService">
             <summary>
@@ -2271,12 +2438,12 @@
             <param name="idUsuario">Identificador del usuario</param>
             <returns>Comentarios del usuario</returns>
         </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IComentarioService.GetByMateriaIdAsync(System.Int32)">
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IComentarioService.GetBySolicitudIdAsync(System.Int32)">
             <summary>
-            Obtiene comentarios por ID de materia.
+            Obtiene comentarios por ID de solicitud.
             </summary>
-            <param name="idMateria">Identificador de la materia</param>
-            <returns>Comentarios de la materia</returns>
+            <param name="idSolicitud">Identificador de la solicitud</param>
+            <returns>Comentarios de la solicitud</returns>
         </member>
         <member name="M:GestionAcademicaAPI.Services.Interfaces.IComentarioService.GetByDateRangeAsync(System.DateTime,System.DateTime)">
             <summary>
@@ -2305,11 +2472,11 @@
             </summary>
             <param name="id">Identificador del comentario a eliminar</param>
         </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IComentarioService.CountByMateriaAsync(System.Int32)">
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IComentarioService.CountBySolicitudAsync(System.Int32)">
             <summary>
-            Cuenta el número de comentarios para una materia específica.
+            Cuenta el número de comentarios para una solicitud específica.
             </summary>
-            <param name="idMateria">Identificador de la materia</param>
+            <param name="idSolicitud">Identificador de la solicitud</param>
             <returns>Número de comentarios en la materia</returns>
         </member>
         <member name="M:GestionAcademicaAPI.Services.Interfaces.IComentarioService.CountByUserAsync(System.Int32)">
@@ -2466,206 +2633,19 @@
             </summary>
             <param name="id">Identificador del estudiante a eliminar</param>
         </member>
-        <member name="T:GestionAcademicaAPI.Services.Interfaces.IMateriaService">
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.ExisteCorreoElectronicoPersonalAsync(System.String,System.Nullable{System.Int32})">
             <summary>
-            Interfaz para el servicio de Materias
+            Verifica si un correo electrónico personal ya está en uso.
             </summary>
+            <param name="correoElectronico">Correo electrónico a verificar.</param>
+            <param name="id">ID del estudiante (opcional, para verificar la unicidad en actualizaciones).</param>
+            <returns>True si el correo electrónico ya existe; de lo contrario, false.</returns>
         </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.GetAllAsync">
+        <member name="M:GestionAcademicaAPI.Services.Interfaces.IEstudianteService.GetAllDetailAsync">
             <summary>
-            Obtiene todas las materias
+            Obtiene todos los estudiantes con sus datos relacionados (Usuario, Solicitudes, Materias)
             </summary>
-            <returns>IEnumerable de materias</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.GetByIdAsync(System.Int32)">
-            <summary>
-            Obtiene una materia por su ID
-            </summary>
-            <param name="id">Identificador de la materia</param>
-            <returns>Materia encontrada o null</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.FindAsync(System.Linq.Expressions.Expression{System.Func{GestionAcademicaAPI.Models.Materia,System.Boolean}})">
-            <summary>
-            Busca materias según un criterio específico
-            </summary>
-            <param name="predicate">Condición de búsqueda</param>
-            <returns>Materias que cumplen el criterio</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.GetByEstudianteIdAsync(System.Int32)">
-            <summary>
-            Obtiene materias por ID de estudiante
-            </summary>
-            <param name="idEstudiante">Identificador del estudiante</param>
-            <returns>Materias del estudiante</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.GetByNombreMateriaEscomAsync(System.String)">
-            <summary>
-            Obtiene materias por nombre de materia ESCOM
-            </summary>
-            <param name="nombreMateriaEscom">Nombre de la materia ESCOM</param>
-            <returns>Materias con el nombre especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.GetByNombreMateriaForaneaAsync(System.String)">
-            <summary>
-            Obtiene materias por nombre de materia foránea
-            </summary>
-            <param name="nombreMateriaForanea">Nombre de la materia foránea</param>
-            <returns>Materias con el nombre especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.GetByStatusAsync(System.String)">
-            <summary>
-            Obtiene materias por status
-            </summary>
-            <param name="status">Status de la materia</param>
-            <returns>Materias con el status especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.AddAsync(GestionAcademicaAPI.Models.Materia)">
-            <summary>
-            Agrega una nueva materia
-            </summary>
-            <param name="materia">Materia a agregar</param>
-            <returns>Materia agregada</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.UpdateAsync(GestionAcademicaAPI.Models.Materia)">
-            <summary>
-            Actualiza una materia existente
-            </summary>
-            <param name="materia">Materia a actualizar</param>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.DeleteAsync(System.Int32)">
-            <summary>
-            Elimina una materia
-            </summary>
-            <param name="id">Identificador de la materia a eliminar</param>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.CountByEstudianteAsync(System.Int32)">
-            <summary>
-            Cuenta el número de materias por estudiante
-            </summary>
-            <param name="idEstudiante">Identificador del estudiante</param>
-            <returns>Número de materias del estudiante</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.CountByStatusAsync(System.String)">
-            <summary>
-            Cuenta el número de materias por status
-            </summary>
-            <param name="status">Status de la materia</param>
-            <returns>Número de materias con el status especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.ExistsByNombreMateriaEscomAsync(System.String)">
-            <summary>
-            Verifica si existe una materia con el nombre de materia ESCOM
-            </summary>
-            <param name="nombreMateriaEscom">Nombre de la materia ESCOM</param>
-            <returns>True si existe, False en caso contrario</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IMateriaService.ExistsByNombreMateriaForaneaAsync(System.String)">
-            <summary>
-            Verifica si existe una materia con el nombre de materia foránea
-            </summary>
-            <param name="nombreMateriaForanea">Nombre de la materia foránea</param>
-            <returns>True si existe, False en caso contrario</returns>
-        </member>
-        <member name="T:GestionAcademicaAPI.Services.Interfaces.IPropuestaService">
-            <summary>
-            Interface para el servicio de propuestas
-            </summary>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.AddAsync(GestionAcademicaAPI.Models.Propuesta)">
-            <summary>
-            Agrega una nueva propuesta
-            </summary>
-            <param name="propuesta">Propuesta a agregar</param>
-            <returns>Propuesta agregada</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.GetAllAsync">
-            <summary>
-            Obtiene todas las propuestas
-            </summary>
-            <returns>IEnumerable de propuestas</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.GetByIdAsync(System.Int32)">
-            <summary>
-            Obtiene una propuesta por su ID
-            </summary>
-            <param name="id">Identificador de la propuesta</param>
-            <returns>Propuesta encontrada o null</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.FindAsync(System.Linq.Expressions.Expression{System.Func{GestionAcademicaAPI.Models.Propuesta,System.Boolean}})">
-            <summary>
-            Busca propuestas según un criterio específico
-            </summary>
-            <param name="predicate">Condición de búsqueda</param>
-            <returns>Propuestas que cumplen el criterio</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.GetBySolicitudIdAsync(System.Int32)">
-            <summary>
-            Obtiene propuestas por ID de solicitud
-            </summary>
-            <param name="idSolicitud">Identificador de la solicitud</param>
-            <returns>Propuestas de la solicitud</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.GetByEscuelaIdAsync(System.Int32)">
-            <summary>
-            Obtiene propuestas por ID de escuela
-            </summary>
-            <param name="idEscuela">Identificador de la escuela</param>
-            <returns>Propuestas de la escuela</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.GetByStatusAsync(System.String)">
-            <summary>
-            Obtiene propuestas por status
-            </summary>
-            <param name="status">Status de la propuesta</param>
-            <returns>Propuestas con el status especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.GetByDateRangeAsync(System.DateTime,System.DateTime)">
-            <summary>
-            Obtiene propuestas dentro de un rango de fechas
-            </summary>
-            <param name="fechaInicio">Fecha de inicio</param>
-            <param name="fechaFin">Fecha de fin</param>
-            <returns>Propuestas en el rango de fechas</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.UpdateAsync(GestionAcademicaAPI.Models.Propuesta)">
-            <summary>
-            Actualiza una propuesta existente
-            </summary>
-            <param name="propuesta">Propuesta a actualizar</param>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.DeleteAsync(System.Int32)">
-            <summary>
-            Elimina una propuesta
-            </summary>
-            <param name="id">Identificador de la propuesta a eliminar</param>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.CountBySolicitudAsync(System.Int32)">
-            <summary>
-            Cuenta el número de propuestas por solicitud
-            </summary>
-            <param name="idSolicitud">Identificador de la solicitud</param>
-            <returns>Número de propuestas de la solicitud</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.CountByEscuelaAsync(System.Int32)">
-            <summary>
-            Cuenta el número de propuestas por escuela
-            </summary>
-            <param name="idEscuela">Identificador de la escuela</param>
-            <returns>Número de propuestas de la escuela</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.CountByStatusAsync(System.String)">
-            <summary>
-            Cuenta el número de propuestas por status
-            </summary>
-            <param name="status">Status de la propuesta</param>
-            <returns>Número de propuestas con el status especificado</returns>
-        </member>
-        <member name="M:GestionAcademicaAPI.Services.Interfaces.IPropuestaService.GetLastPropuestaBySolicitudAsync(System.Int32)">
-            <summary>
-            Obtiene la última propuesta de una solicitud
-            </summary>
-            <param name="idSolicitud">Identificador de la solicitud</param>
-            <returns>Última propuesta de la solicitud o null</returns>
+            <returns>IEnumerable de estudiantes con todas sus entidades relacionadas</returns>
         </member>
         <member name="T:GestionAcademicaAPI.Services.Interfaces.IUsuarioService">
             <summary>

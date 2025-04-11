@@ -98,37 +98,6 @@ namespace GestionAcademicaAPI.Helpers
         public string Password { get; set; } = string.Empty;
     }
 
-    /// <summary>
-    /// Actualizar Admin
-    /// </summary>
-    public class ActualizarAdminRequest
-    {
-        /// <summary>
-        /// El ID de Administrador.
-        /// </summary>
-        public int Id { get; set; }
-        /// <summary>
-        /// El username de Administrador.
-        /// </summary>
-        public string Username { get; set; } = string.Empty;
-        /// <summary>
-        /// La password de Administrador
-        /// </summary>
-        public string Password { get; set; } = string.Empty;
-        /// <summary>
-        /// El nuevo nombre de Usuario
-        /// </summary>
-        public string NuevoUsername { get; set; } = string.Empty;
-        /// <summary>
-        /// La nueva Password
-        /// </summary>
-        public string NuevaPassword { get; set; } = string.Empty;
-        /// <summary>
-        /// El correo electrónico personal.
-        /// </summary>
-        public string NuevoEmailPersonal { get; set; } = string.Empty;
-    }
-
     public class ActualizarPasswordRequest
     {
         public string Username { get; set; }
@@ -197,6 +166,10 @@ namespace GestionAcademicaAPI.Helpers
         /// La password de Estudiante
         /// </summary>
         public string Password { get; set; } = string.Empty;
+        /// <summary>
+        /// URL del PDF
+        /// </summary>
+        public string NuevoInePdf { get; set; } = string.Empty;
         /// <summary>
         /// El nuevo correo electrónico escolar.
         /// </summary>

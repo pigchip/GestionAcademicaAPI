@@ -15,7 +15,7 @@ namespace GestionAcademicaAPI.Services.Interfaces
         Task<IEnumerable<SolicitudResponseDto>> GetByEstudianteIdAsync(int idEstudiante);
         Task<IEnumerable<SolicitudResponseDto>> GetByStatusAsync(string status);
         Task<IEnumerable<SolicitudResponseDto>> GetByDateRangeAsync(DateTime fechaInicio, DateTime fechaFin);
-        Task<SolicitudResponseDto> UpdateAsync(SolicitudUpdateDto solicitudDto); // Cambiado
+        Task<SolicitudResponseDto> UpdateAsync(SolicitudUpdateDto solicitudDto);
         Task DeleteAsync(int id);
         Task<int> CountByEstudianteAsync(int idEstudiante);
         Task<int> CountByStatusAsync(string status);

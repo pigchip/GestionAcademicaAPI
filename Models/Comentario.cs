@@ -21,10 +21,10 @@ namespace GestionAcademicaAPI.Models
         public required string Contenido { get; set; }
 
         /// <summary>
-        /// Obtiene o establece el identificador de la materia asociada al comentario.
+        /// Obtiene o establece el identificador de la solicitud asociada al comentario.
         /// </summary>
         [Required]
-        public int IdMateria { get; set; }
+        public int IdSolicitud { get; set; }
 
         /// <summary>
         /// Obtiene o establece el identificador del usuario que realizó el comentario.
@@ -39,15 +39,15 @@ namespace GestionAcademicaAPI.Models
         public DateTime Fecha { get; set; }
 
         /// <summary>
-        /// Obtiene o establece la materia asociada al comentario.
+        /// Obtiene o establece la solicitud asociada al comentario.
         /// </summary>
-        [ForeignKey("IdMateria")]
-        public required Materia Materia { get; set; }
+        [ForeignKey("IdSolicitud")]
+        public Solicitud? Solicitud { get; set; }
 
         /// <summary>
         /// Obtiene o establece el usuario que realizó el comentario.
         /// </summary>
         [ForeignKey("IdUsuario")]
-        public required Usuario Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
     }
 }

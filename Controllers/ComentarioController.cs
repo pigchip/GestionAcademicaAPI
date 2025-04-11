@@ -1,4 +1,5 @@
-﻿using GestionAcademicaAPI.Models;
+﻿using GestionAcademicaAPI.Dtos; // Add this for ComentarioDTO
+using GestionAcademicaAPI.Models;
 using GestionAcademicaAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,15 +18,34 @@ namespace GestionAcademicaAPI.Controllers
 
         // Create
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] Comentario comentario)
+        public async Task<IActionResult> Add([FromBody] ComentarioDTO comentarioDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            // Map DTO to entity
+            var comentario = new Comentario
+            {
+                Contenido = comentarioDto.Contenido,
+                IdSolicitud = comentarioDto.IdSolicitud,
+                IdUsuario = comentarioDto.IdUsuario,
+                Fecha = comentarioDto.Fecha
+            };
+
             var createdComentario = await _comentarioService.AddAsync(comentario);
-            return CreatedAtAction(nameof(GetById), new { id = createdComentario.Id }, createdComentario);
+
+            // Map entity back to DTO for response
+            var createdComentarioDto = new ComentarioDTO
+            {
+                Contenido = createdComentario.Contenido,
+                IdSolicitud = createdComentario.IdSolicitud,
+                IdUsuario = createdComentario.IdUsuario,
+                Fecha = createdComentario.Fecha
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = createdComentario.Id }, createdComentarioDto);
         }
 
         // Read
@@ -33,7 +53,14 @@ namespace GestionAcademicaAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             var comentarios = await _comentarioService.GetAllAsync();
-            return Ok(comentarios);
+            var comentarioDtos = comentarios.Select(c => new ComentarioDTO
+            {
+                Contenido = c.Contenido,
+                IdSolicitud = c.IdSolicitud,
+                IdUsuario = c.IdUsuario,
+                Fecha = c.Fecha
+            });
+            return Ok(comentarioDtos);
         }
 
         [HttpGet("{id}")]
@@ -44,34 +71,63 @@ namespace GestionAcademicaAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(comentario);
+
+            var comentarioDto = new ComentarioDTO
+            {
+                Contenido = comentario.Contenido,
+                IdSolicitud = comentario.IdSolicitud,
+                IdUsuario = comentario.IdUsuario,
+                Fecha = comentario.Fecha
+            };
+            return Ok(comentarioDto);
+        }
+
+        [HttpGet("solicitud/{idSolicitud}")]
+        public async Task<IActionResult> GetBySolicitudId(int idSolicitud)
+        {
+            var comentarios = await _comentarioService.GetBySolicitudIdAsync(idSolicitud);
+            var comentarioDtos = comentarios.Select(c => new ComentarioDTO
+            {
+                Contenido = c.Contenido,
+                IdSolicitud = c.IdSolicitud,
+                IdUsuario = c.IdUsuario,
+                Fecha = c.Fecha
+            });
+            return Ok(comentarioDtos);
         }
 
         [HttpGet("user/{idUsuario}")]
         public async Task<IActionResult> GetByUserId(int idUsuario)
         {
             var comentarios = await _comentarioService.GetByUserIdAsync(idUsuario);
-            return Ok(comentarios);
-        }
-
-        [HttpGet("materia/{idMateria}")]
-        public async Task<IActionResult> GetByMateriaId(int idMateria)
-        {
-            var comentarios = await _comentarioService.GetByMateriaIdAsync(idMateria);
-            return Ok(comentarios);
+            var comentarioDtos = comentarios.Select(c => new ComentarioDTO
+            {
+                Contenido = c.Contenido,
+                IdSolicitud = c.IdSolicitud,
+                IdUsuario = c.IdUsuario,
+                Fecha = c.Fecha
+            });
+            return Ok(comentarioDtos);
         }
 
         [HttpGet("date-range")]
         public async Task<IActionResult> GetByDateRange(DateTime fechaInicio, DateTime fechaFin)
         {
             var comentarios = await _comentarioService.GetByDateRangeAsync(fechaInicio, fechaFin);
-            return Ok(comentarios);
+            var comentarioDtos = comentarios.Select(c => new ComentarioDTO
+            {
+                Contenido = c.Contenido,
+                IdSolicitud = c.IdSolicitud,
+                IdUsuario = c.IdUsuario,
+                Fecha = c.Fecha
+            });
+            return Ok(comentarioDtos);
         }
 
-        [HttpGet("count/materia/{idMateria}")]
-        public async Task<IActionResult> CountByMateria(int idMateria)
+        [HttpGet("count/solicitud/{idSolicitud}")]
+        public async Task<IActionResult> CountBySolicitud(int idSolicitud)
         {
-            var count = await _comentarioService.CountByMateriaAsync(idMateria);
+            var count = await _comentarioService.CountBySolicitudAsync(idSolicitud);
             return Ok(count);
         }
 
@@ -84,14 +140,26 @@ namespace GestionAcademicaAPI.Controllers
 
         // Update
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Comentario comentario)
+        public async Task<IActionResult> Update(int id, [FromBody] ComentarioDTO comentarioDto)
         {
-            if (id != comentario.Id || !ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            await _comentarioService.UpdateAsync(comentario);
+            var existingComentario = await _comentarioService.GetByIdAsync(id);
+            if (existingComentario == null)
+            {
+                return NotFound();
+            }
+
+            // Map DTO to existing entity
+            existingComentario.Contenido = comentarioDto.Contenido;
+            existingComentario.IdSolicitud = comentarioDto.IdSolicitud;
+            existingComentario.IdUsuario = comentarioDto.IdUsuario;
+            existingComentario.Fecha = comentarioDto.Fecha;
+
+            await _comentarioService.UpdateAsync(existingComentario);
             return NoContent();
         }
 

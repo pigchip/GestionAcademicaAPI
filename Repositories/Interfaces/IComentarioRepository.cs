@@ -36,11 +36,11 @@ namespace GestionAcademicaAPI.Repositories.Interfaces
         Task<IEnumerable<Comentario>> GetByUserIdAsync(int idUsuario);
 
         /// <summary>
-        /// Obtiene comentarios por ID de materia
+        /// Obtiene comentarios por ID de solicitud
         /// </summary>
-        /// <param name="idMateria">Identificador de la materia</param>
-        /// <returns>Comentarios de la materia</returns>
-        Task<IEnumerable<Comentario>> GetByMateriaIdAsync(int idMateria);
+        /// <param name="idSolicitud">Identificador de la solicitud</param>
+        /// <returns>Comentarios de la solicitud</returns>
+        Task<IEnumerable<Comentario>> GetBySolicitudIdAsync(int idSolicitud);
 
         /// <summary>
         /// Obtiene comentarios dentro de un rango de fechas
@@ -70,11 +70,11 @@ namespace GestionAcademicaAPI.Repositories.Interfaces
         Task DeleteAsync(int id);
 
         /// <summary>
-        /// Cuenta el número de comentarios para una materia específica
+        /// Cuenta el número de comentarios para una solicitud específica
         /// </summary>
-        /// <param name="idMateria">Identificador de la materia</param>
+        /// <param name="idSolicitud">Identificador de la solicitud</param>
         /// <returns>Número de comentarios en la materia</returns>
-        Task<int> CountByMateriaAsync(int idMateria);
+        Task<int> CountBySolicitudAsync(int idMateria);
 
         /// <summary>
         /// Cuenta el número de comentarios realizados por un usuario

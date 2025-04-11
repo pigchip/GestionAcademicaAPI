@@ -102,6 +102,7 @@ namespace GestionAcademicaAPI.Services.Implementations
                     EmailPersonal = usuario.EmailPersonal,
                     Password = usuario.Password
                 },
+                InePdf = entity.InePdf,
                 Nombre = entity.Nombre,
                 ApellidoPat = entity.ApellidoPat,
                 ApellidoMat = entity.ApellidoMat,
@@ -184,6 +185,145 @@ namespace GestionAcademicaAPI.Services.Implementations
             return estudianteDTOs;
         }
 
+        /// <summary>
+        /// Obtiene todos los estudiantes con sus datos relacionados (Usuario, Solicitudes, Materias)
+        /// </summary>
+        /// <returns>IEnumerable de estudiantes con todas sus entidades relacionadas</returns>
+        public async Task<IEnumerable<EstudianteDetalladoDTO>> GetAllDetailAsync()
+        {
+            // Utilizar el método del repositorio que carga todas las entidades relacionadas
+            var entities = await _estudianteRepository.GetAllWithDetailsAsync();
+            if (!entities.Any())
+            {
+                throw new KeyNotFoundException("No students found.");
+            }
+
+            // Mapear las entidades a DTOs para evitar ciclos de referencia
+            var estudiantesDTOs = new List<EstudianteDetalladoDTO>();
+
+            foreach (var entity in entities)
+            {
+                var estudianteDTO = new EstudianteDetalladoDTO
+                {
+                    Id = entity.Id,
+                    Nombre = entity.Nombre,
+                    ApellidoPat = entity.ApellidoPat,
+                    ApellidoMat = entity.ApellidoMat,
+                    EmailEscolar = entity.EmailEscolar,
+                    InePdf = entity.InePdf,
+                    Boleta = entity.Boleta,
+                    Carrera = entity.Carrera,
+                    IdUsuario = entity.IdUsuario,
+                    Usuario = new UsuarioInfoDTO
+                    {
+                        Id = entity.Usuario.Id,
+                        Username = entity.Usuario.Username,
+                        EmailPersonal = entity.Usuario.EmailPersonal
+                    }
+                };
+
+                // Mapear las solicitudes
+                if (entity.Solicitudes != null)
+                {
+                    foreach (var solicitud in entity.Solicitudes)
+                    {
+                        var solicitudDTO = new SolicitudInfoDTO
+                        {
+                            Id = solicitud.Id,
+                            Status = solicitud.Status,
+                            Fecha = solicitud.Fecha
+                        };
+
+                        // Mapear las propuestas de cada solicitud
+                        if (solicitud.Propuestas != null)
+                        {
+                            foreach (var propuesta in solicitud.Propuestas)
+                            {
+                                var propuestaDTO = new PropuestaInfoDTO
+                                {
+                                    Id = propuesta.Id,
+                                    Status = propuesta.Status,
+                                    Fecha = propuesta.Fecha,
+                                    Escuela = propuesta.Escuela != null ? new EscuelaInfoDTO
+                                    {
+                                        Id = propuesta.Escuela.Id,
+                                        Nombre = propuesta.Escuela.Nombre
+                                    } : null
+                                };
+
+                                // Mapear las materias de cada propuesta
+                                if (propuesta.Materias != null)
+                                {
+                                    foreach (var materia in propuesta.Materias)
+                                    {
+                                        propuestaDTO.Materias.Add(new MateriaInfoDTO
+                                        {
+                                            Id = materia.Id,
+                                            NombreMateriaEscom = materia.NombreMateriaEscom,
+                                            NombreMateriaForanea = materia.NombreMateriaForanea,
+                                            TemarioMateriaForaneaUrl = materia.TemarioMateriaForaneaUrl,
+                                            Status = materia.Status
+                                        });
+                                    }
+                                }
+
+                                solicitudDTO.Propuestas.Add(propuestaDTO);
+                            }
+                        }
+
+                        // Mapear los comentarios de cada solicitud
+                        if (solicitud.Comentarios != null)
+                        {
+                            foreach (var comentario in solicitud.Comentarios)
+                            {
+                                var comentarioDTO = new ComentarioInfoDTO
+                                {
+                                    Id = comentario.Id,
+                                    Contenido = comentario.Contenido,
+                                    Fecha = comentario.Fecha
+                                };
+
+                                // Mapear usuario del comentario
+                                if (comentario.Usuario != null)
+                                {
+                                    comentarioDTO.Usuario = new UsuarioInfoDTO
+                                    {
+                                        Id = comentario.Usuario.Id,
+                                        Username = comentario.Usuario.Username,
+                                        EmailPersonal = comentario.Usuario.EmailPersonal
+                                    };
+                                }
+
+                                solicitudDTO.Comentarios.Add(comentarioDTO);
+                            }
+                        }
+
+                        estudianteDTO.Solicitudes.Add(solicitudDTO);
+                    }
+                }
+
+                // Mapear las materias del estudiante
+                if (entity.Materias != null)
+                {
+                    foreach (var materia in entity.Materias)
+                    {
+                        estudianteDTO.Materias.Add(new MateriaInfoDTO
+                        {
+                            Id = materia.Id,
+                            NombreMateriaEscom = materia.NombreMateriaEscom,
+                            NombreMateriaForanea = materia.NombreMateriaForanea,
+                            TemarioMateriaForaneaUrl = materia.TemarioMateriaForaneaUrl,
+                            Status = materia.Status
+                        });
+                    }
+                }
+
+                estudiantesDTOs.Add(estudianteDTO);
+            }
+
+            return estudiantesDTOs;
+        }
+
         public async Task<Estudiante?> GetByUserIdAsync(int idUsuario)
         {
             var entity = await _estudianteRepository.GetByUserIdAsync(idUsuario);
@@ -255,6 +395,7 @@ namespace GestionAcademicaAPI.Services.Implementations
 
                 // Actualizar las propiedades del Estudiante
                 existing.Nombre = dto.Nombre;
+                existing.InePdf = dto.InePdf;
                 existing.ApellidoPat = dto.ApellidoPat;
                 existing.ApellidoMat = dto.ApellidoMat;
                 existing.EmailEscolar = dto.EmailEscolar;
@@ -273,6 +414,7 @@ namespace GestionAcademicaAPI.Services.Implementations
                     IdUsuario = existing.IdUsuario,
                     Username = existing.Usuario.Username,
                     EmailPersonal = existing.Usuario.EmailPersonal,
+                    InePdf = existing.InePdf,
                     Password = null, // Por seguridad, no devolvemos la contraseña
                     Nombre = existing.Nombre,
                     ApellidoPat = existing.ApellidoPat,
@@ -342,6 +484,12 @@ namespace GestionAcademicaAPI.Services.Implementations
         public async Task<IEnumerable<Estudiante>> GetByCarreraAsync(string carrera)
         {
             return await _estudianteRepository.GetByCarreraAsync(carrera);
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> ExisteCorreoElectronicoPersonalAsync(string correoElectronico, int? idExcluir = null)
+        {
+            return await _estudianteRepository.ExisteCorreoElectronicoPersonalAsync(correoElectronico, idExcluir);
         }
     }
 }

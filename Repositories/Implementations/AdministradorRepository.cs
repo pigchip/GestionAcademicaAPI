@@ -108,28 +108,26 @@ namespace GestionAcademicaAPI.Repositories.Implementations
         /// Actualiza un administrador existente
         /// </summary>
         /// <param name="administrador">Solicitud de actualización del administrador</param>
-        public async Task<Administrador> UpdateAsync(ActualizarAdminRequest administrador)
+        public async Task<Administrador> UpdateAsync(Administrador administrador)
         {
-            // Validar la solicitud de actualización del administrador
-            ValidateAdminRequest(administrador);
-
-            var administradorExistente = await _context.Set<Administrador>().FindAsync(administrador.Id);
-
-            if (administradorExistente == null)
+            if (administrador == null || administrador.Usuario == null)
             {
-                throw new KeyNotFoundException($"Administrador con ID {administrador.Id} no encontrado");
+                throw new ArgumentNullException(nameof(administrador), "El Administrador o su usuario no pueden ser nulos");
             }
 
-            if (!string.IsNullOrEmpty(administrador.NuevaPassword))
+            // Attach entity and mark it as modified
+            var entry = _context.Entry(administrador);
+            if (entry.State == EntityState.Detached)
             {
-                administradorExistente.Usuario.Password = Helpers.Helpers.HashPassword(administrador.NuevaPassword);
+                _context.Administradores.Attach(administrador);
             }
+            entry.State = EntityState.Modified;
 
-            administradorExistente.Usuario.Username = administrador.NuevoUsername;
-            administradorExistente.Usuario.EmailPersonal = administrador.NuevoEmailPersonal;
+            // Exclude related entity from update to avoid tracking conflicts
+            entry.Reference(e => e.Usuario).IsModified = false;
 
             await _context.SaveChangesAsync();
-            return administradorExistente;
+            return administrador;
         }
 
         /// <summary>
@@ -172,29 +170,6 @@ namespace GestionAcademicaAPI.Repositories.Implementations
         public async Task<bool> ExistsForUserAsync(int idUsuario)
         {
             return await _context.Set<Administrador>().AnyAsync(a => a.IdUsuario == idUsuario);
-        }
-
-        private void ValidateAdminRequest(ActualizarAdminRequest adminRequest)
-        {
-            if (adminRequest.Id <= 0)
-            {
-                throw new ArgumentException("El ID es obligatorio y debe ser mayor que cero.", nameof(adminRequest.Id));
-            }
-
-            if (string.IsNullOrWhiteSpace(adminRequest.NuevoUsername))
-            {
-                throw new ArgumentException("El nuevo nombre de usuario es obligatorio.", nameof(adminRequest.NuevoUsername));
-            }
-
-            if (string.IsNullOrWhiteSpace(adminRequest.NuevaPassword))
-            {
-                throw new ArgumentException("La nueva contraseña es obligatoria.", nameof(adminRequest.NuevaPassword));
-            }
-
-            if (string.IsNullOrWhiteSpace(adminRequest.NuevoEmailPersonal))
-            {
-                throw new ArgumentException("El nuevo correo electrónico personal es obligatorio.", nameof(adminRequest.NuevoEmailPersonal));
-            }
         }
     }
 }

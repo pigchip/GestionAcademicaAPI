@@ -34,6 +34,7 @@ namespace GestionAcademicaAPI.Repositories.Implementations
         {
             return await _context.Materias.Where(m => m.IdPropuesta == idPropuesta).ToListAsync();
         }
+
         public async Task<IEnumerable<Materia>> GetByEstudianteIdAsync(int idEstudiante)
         {
             return await _context.Materias.Where(m => m.IdEstudiante == idEstudiante).ToListAsync();
@@ -98,6 +99,31 @@ namespace GestionAcademicaAPI.Repositories.Implementations
         public async Task<bool> ExistsByNombreMateriaForaneaAsync(string nombreMateriaForanea)
         {
             return await _context.Materias.AnyAsync(m => m.NombreMateriaForanea == nombreMateriaForanea);
+        }
+
+        // Implementación del nuevo método para actualizar el temario
+        public async Task UpdateTemarioAsync(UpdateTemarioDto request)
+        {
+            var materia = await _context.Materias.FindAsync(request.Id);
+            if (materia == null)
+                throw new KeyNotFoundException($"Materia con ID {request.Id} no encontrada.");
+
+            materia.TemarioMateriaForaneaUrl = request.TemarioMateriaForaneaUrl;
+            materia.Status = request.Status;
+            _context.Materias.Update(materia);
+            await _context.SaveChangesAsync();
+        }
+
+        // Implementación del nuevo método para actualizar el temario
+        public async Task UpdateStatusAsync(UpdateStatusDto request)
+        {
+            var materia = await _context.Materias.FindAsync(request.Id);
+            if (materia == null)
+                throw new KeyNotFoundException($"Materia con ID {request.Id} no encontrada.");
+
+            materia.Status = request.Status;
+            _context.Materias.Update(materia);
+            await _context.SaveChangesAsync();
         }
     }
 }

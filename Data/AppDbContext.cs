@@ -121,16 +121,17 @@ namespace MyProject.Data
                 .WithOne(c => c.Usuario)
                 .HasForeignKey(c => c.IdUsuario);
 
-            modelBuilder.Entity<Materia>()
-                .HasMany(m => m.Comentarios)
-                .WithOne(c => c.Materia)
-                .HasForeignKey(c => c.IdMateria);
-
             modelBuilder.Entity<Solicitud>()
                 .HasMany(s => s.Propuestas)
                 .WithOne(p => p.Solicitud)
                 .HasForeignKey(p => p.IdSolicitud)
                 .OnDelete(DeleteBehavior.Cascade); // Si se elimina la solicitud, se eliminan sus propuestas
+
+            modelBuilder.Entity<Solicitud>()
+                .HasMany(s => s.Comentarios)
+                .WithOne(c => c.Solicitud)
+                .HasForeignKey(c => c.IdSolicitud)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Escuela>()
                 .HasMany(e => e.Propuestas)

@@ -63,10 +63,5 @@ namespace GestionAcademicaAPI.Models
         /// </summary>
         [ForeignKey("IdPropuesta")]
         public Propuesta Propuesta { get; set; }
-
-        /// <summary>
-        /// Obtiene o establece la colección de comentarios asociados a la materia.
-        /// </summary>
-        public ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
     }
 }

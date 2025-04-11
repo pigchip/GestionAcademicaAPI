@@ -4,6 +4,7 @@ using GestionAcademicaAPI.DTOs;
 using GestionAcademicaAPI.Services.Interfaces;
 using GestionAcademicaAPI.Models;
 using GestionAcademicaAPI.Dtos;
+using GestionAcademicaAPI.Services.Implementations;
 
 namespace GestionAcademicaAPI.Controllers
 {
@@ -16,6 +17,7 @@ namespace GestionAcademicaAPI.Controllers
     {
         private readonly IEstudianteService _estudianteService;
         private readonly IUsuarioService _usuarioService;
+        private readonly ISolicitudService _solicitudService;
         private readonly ILogger<EstudianteController> _logger;
 
         /// <summary>
@@ -23,14 +25,17 @@ namespace GestionAcademicaAPI.Controllers
         /// </summary>
         /// <param name="estudianteService">El servicio de estudiantes</param>
         /// <param name="usuarioService">El servicio de usuarios</param>
+        /// <param name="solicitudService">El servicio de solicitudes</param>
         /// <param name="logger">El registrador de eventos</param>
         public EstudianteController(
             IEstudianteService estudianteService,
             IUsuarioService usuarioService,
+            ISolicitudService solicitudService,
             ILogger<EstudianteController> logger)
         {
             _estudianteService = estudianteService;
             _usuarioService = usuarioService;
+            _solicitudService = solicitudService;
             _logger = logger;
         }
 
@@ -48,11 +53,36 @@ namespace GestionAcademicaAPI.Controllers
                     return Conflict($"El nombre de usuario '{request.Username}' ya está en uso.");
                 }
 
+                //Verificar si la boleta ya existe
+                if (await _estudianteService.GetByBoletaAsync(request.Boleta) != null)
+                {
+                    return Conflict($"La boleta '{request.Boleta}' ya está en uso.");
+                }
+
                 // Verificar si el correo electrónico ya existe
                 if (await _usuarioService.ExisteCorreoElectronicoAsync(request.EmailPersonal))
                 {
                     return Conflict($"El correo electrónico '{request.EmailPersonal}' ya está en uso.");
                 }
+
+                // Verificar si el correo electrónico ya existe
+                if (await _usuarioService.ExisteCorreoElectronicoAsync(request.EmailEscolar))
+                {
+                    return Conflict($"El correo electrónico '{request.EmailEscolar}' ya está en uso.");
+                }
+
+                // Verificar si el correo electrónico escolar ya existeS
+                if (await _estudianteService.ExisteCorreoElectronicoPersonalAsync(request.EmailPersonal))
+                {
+                    return Conflict($"El correo electrónico '{request.EmailPersonal}' ya está en uso.");
+                }
+
+                // Verificar si el correo electrónico escolar ya existeS
+                if (await _estudianteService.ExisteCorreoElectronicoPersonalAsync(request.EmailEscolar))
+                {
+                    return Conflict($"El correo electrónico '{request.EmailEscolar}' ya está en uso.");
+                }
+
 
                 // Crear un DTO para agregar el usuario
                 var usuarioDto = new EstudianteDTO
@@ -190,6 +220,29 @@ namespace GestionAcademicaAPI.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Obtiene todos los estudiantes
+        /// </summary>
+        [HttpGet("detail")]
+        public async Task<ActionResult<IEnumerable<EstudianteDetalladoDTO>>> GetAllDetail()
+        {
+            try
+            {
+                var estudiantes = await _estudianteService.GetAllDetailAsync();
+                return Ok(estudiantes);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener todos los estudiantes");
+                return BadRequest($"Error al obtener los estudiantes: {ex.Message}");
+            }
+        }
+
         /// <summary>
         /// Verifica si existe un estudiante para un usuario específico
         /// </summary>
@@ -226,7 +279,7 @@ namespace GestionAcademicaAPI.Controllers
         }
 
         /// <summary>
-        /// Elimina un estudiante
+        /// Elimina un estudiante y sus solicitudes relacionadas
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -240,11 +293,25 @@ namespace GestionAcademicaAPI.Controllers
                     return NotFound($"Estudiante con ID {id} no encontrado");
                 }
 
+                // Obtener las solicitudes del estudiante
+                var solicitudes = await _solicitudService.GetByEstudianteIdAsync(estudiante.Id);
+
+                // Eliminar cada solicitud relacionada
+                if (solicitudes != null)
+                {
+                    foreach (var solicitud in solicitudes)
+                    {
+                        if (solicitud != null) // Verificación adicional
+                        {
+                            await _solicitudService.DeleteAsync(solicitud.Id);
+                        }
+                    }
+                }
+
                 // Eliminar el estudiante
                 await _estudianteService.DeleteAsync(id);
 
-                // También podríamos eliminar al usuario si es necesario
-                // await _usuarioService.EliminarUsuarioAsync(estudiante.IdUsuario);
+                await _usuarioService.EliminarUsuarioAsync(estudiante.IdUsuario);
 
                 return NoContent();
             }
@@ -259,8 +326,9 @@ namespace GestionAcademicaAPI.Controllers
             }
         }
 
+
         [HttpPut("update-password")]
-        public async Task<ActionResult> UpdatePassword([FromBody] ActualizarPasswordRequest request)
+        public async Task<ActionResult> UpdatePassword([FromBody] ActualizarPasswordAdminRequest request)
         {
             if (request == null)
             {
@@ -367,6 +435,7 @@ namespace GestionAcademicaAPI.Controllers
                     IdUsuario = usuario.Id,
                     Username = request.Username,
                     Password = request.Password,
+                    InePdf = request.NuevoInePdf,
                     EmailPersonal = request.NuevoEmailPersonal,
                     Nombre = request.NuevoNombre,
                     ApellidoPat = request.NuevoApellidoPaterno,

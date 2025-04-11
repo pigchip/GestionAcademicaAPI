@@ -15,9 +15,9 @@ namespace GestionAcademicaAPI.Dtos
         public required string Contenido { get; set; }
 
         /// <summary>
-        /// Obtiene o establece el identificador de la materia asociada al comentario.
+        /// Obtiene o establece el identificador de la solicitud asociada al comentario.
         /// </summary>
-        public int IdMateria { get; set; }
+        public int IdSolicitud { get; set; }
 
         /// <summary>
         /// Obtiene o establece el identificador del usuario que realizó el comentario.

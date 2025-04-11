@@ -82,5 +82,19 @@ namespace GestionAcademicaAPI.Services.Interfaces
         /// </summary>
         /// <param name="id">Identificador del estudiante a eliminar</param>
         Task DeleteAsync(int id);
+
+        /// <summary>
+        /// Verifica si un correo electrónico personal ya está en uso.
+        /// </summary>
+        /// <param name="correoElectronico">Correo electrónico a verificar.</param>
+        /// <param name="id">ID del estudiante (opcional, para verificar la unicidad en actualizaciones).</param>
+        /// <returns>True si el correo electrónico ya existe; de lo contrario, false.</returns>
+        Task<bool> ExisteCorreoElectronicoPersonalAsync(string correoElectronico, int? id = null);
+
+        /// <summary>
+        /// Obtiene todos los estudiantes con sus datos relacionados (Usuario, Solicitudes, Materias)
+        /// </summary>
+        /// <returns>IEnumerable de estudiantes con todas sus entidades relacionadas</returns>
+        Task<IEnumerable<EstudianteDetalladoDTO>> GetAllDetailAsync();
     }
 }

@@ -15,51 +15,73 @@ namespace GestionAcademicaAPI.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<Propuesta> AddAsync(Propuesta propuesta)
-        {
-            _context.Propuestas.Add(propuesta);
-            await _context.SaveChangesAsync();
-            return propuesta;
-        }
-
         public async Task<IEnumerable<Propuesta>> GetAllAsync()
         {
-            return await _context.Propuestas.ToListAsync();
+            return await _context.Propuestas
+                .Include(p => p.Escuela)
+                .Include(p => p.Materias)
+                .ToListAsync();
         }
 
         public async Task<Propuesta?> GetByIdAsync(int id)
         {
-            return await _context.Propuestas.FindAsync(id);
+            return await _context.Propuestas
+                .Include(p => p.Escuela)
+                .Include(p => p.Materias)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<IEnumerable<Propuesta>> FindAsync(Expression<Func<Propuesta, bool>> predicate)
         {
-            return await _context.Propuestas.Where(predicate).ToListAsync();
+            return await _context.Propuestas
+                .Include(p => p.Escuela)
+                .Include(p => p.Materias)
+                .Where(predicate)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Propuesta>> GetBySolicitudIdAsync(int idSolicitud)
         {
-            return await _context.Propuestas.Where(p => p.IdSolicitud == idSolicitud).ToListAsync();
+            return await _context.Propuestas
+                .Include(p => p.Escuela)
+                .Include(p => p.Materias)
+                .Where(p => p.IdSolicitud == idSolicitud)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Propuesta>> GetByEscuelaIdAsync(int idEscuela)
         {
-            return await _context.Propuestas.Where(p => p.IdEscuela == idEscuela).ToListAsync();
+            return await _context.Propuestas
+                .Include(p => p.Escuela)
+                .Include(p => p.Materias)
+                .Where(p => p.IdEscuela == idEscuela)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Propuesta>> GetByStatusAsync(string status)
         {
-            return await _context.Propuestas.Where(p => p.Status == status).ToListAsync();
+            return await _context.Propuestas
+                .Include(p => p.Escuela)
+                .Include(p => p.Materias)
+                .Where(p => p.Status == status)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Propuesta>> GetByDateRangeAsync(DateTime fechaInicio, DateTime fechaFin)
         {
-            return await _context.Propuestas.Where(p => p.Fecha >= fechaInicio && p.Fecha <= fechaFin).ToListAsync();
+            return await _context.Propuestas
+                .Include(p => p.Escuela)
+                .Include(p => p.Materias)
+                .Where(p => p.Fecha >= fechaInicio && p.Fecha <= fechaFin)
+                .ToListAsync();
         }
 
         public async Task UpdateAsync(Propuesta propuesta)
         {
-            var existingPropuesta = await _context.Propuestas.FindAsync(propuesta.Id);
+            var existingPropuesta = await _context.Propuestas
+                .Include(p => p.Escuela)
+                .Include(p => p.Materias)
+                .FirstOrDefaultAsync(p => p.Id == propuesta.Id);
             if (existingPropuesta == null)
                 throw new KeyNotFoundException($"Propuesta con ID {propuesta.Id} no encontrada.");
             _context.Entry(existingPropuesta).CurrentValues.SetValues(propuesta);
@@ -94,6 +116,8 @@ namespace GestionAcademicaAPI.Repositories.Implementations
         public async Task<Propuesta?> GetLastPropuestaBySolicitudAsync(int idSolicitud)
         {
             return await _context.Propuestas
+                .Include(p => p.Escuela)
+                .Include(p => p.Materias)
                 .Where(p => p.IdSolicitud == idSolicitud)
                 .OrderByDescending(p => p.Fecha)
                 .FirstOrDefaultAsync();

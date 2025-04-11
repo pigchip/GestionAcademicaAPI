@@ -111,6 +111,47 @@ namespace GestionAcademicaAPI.Controllers
             return NoContent();
         }
 
+        // Nuevo endpoint para actualizar el temario (ID en el cuerpo JSON)
+        [HttpPatch("temario")]
+        public async Task<IActionResult> UpdateTemario([FromBody] UpdateTemarioDto temarioDto)
+        {
+            if (temarioDto == null || temarioDto.Id <= 0 || string.IsNullOrWhiteSpace(temarioDto.TemarioMateriaForaneaUrl))
+            {
+                return BadRequest("El cuerpo de la solicitud debe incluir un ID válido y una URL del temario.");
+            }
+
+            try
+            {
+                await _materiaService.UpdateTemarioAsync(temarioDto);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound($"Materia con ID {temarioDto.Id} no encontrada.");
+            }
+        }
+
+
+        // Nuevo endpoint para actualizar el temario (ID en el cuerpo JSON)
+        [HttpPatch("status")]
+        public async Task<IActionResult> UpdateStatus([FromBody] UpdateStatusDto temarioDto)
+        {
+            if (temarioDto == null || temarioDto.Id <= 0 || string.IsNullOrWhiteSpace(temarioDto.Status))
+            {
+                return BadRequest("El cuerpo de la solicitud debe incluir un ID válido y un status.");
+            }
+
+            try
+            {
+                await _materiaService.UpdateStatusAsync(temarioDto);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound($"Materia con ID {temarioDto.Id} no encontrada.");
+            }
+        }
+
         // Delete
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

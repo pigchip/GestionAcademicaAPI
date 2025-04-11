@@ -31,6 +31,11 @@ namespace GestionAcademicaAPI.Dtos
         /// Lista de propuestas asociadas a la solicitud.
         /// </summary>
         public PropuestaList Propuestas { get; set; } = new PropuestaList();
+
+        /// <summary>
+        /// Lista de comentarios asociados a la solicitud.
+        /// </summary>
+        public ComentarioList Comentarios { get; set; } = new ComentarioList();
     }
 
     /// <summary>
@@ -127,5 +132,44 @@ namespace GestionAcademicaAPI.Dtos
         /// Estado actual de la materia.
         /// </summary>
         public string Status { get; set; }
+    }
+
+    /// <summary>
+    /// Clase auxiliar para la lista de comentarios.
+    /// </summary>
+    public class ComentarioList
+    {
+        public List<ComentarioResponseDTO> Values { get; set; } = new List<ComentarioResponseDTO>();
+    }
+
+    /// <summary>
+    /// DTO para representar un comentario.
+    /// </summary>
+    public class ComentarioResponseDTO
+    {
+        /// <summary>
+        /// Identificador único del comentario.
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Contenido del comentario.
+        /// </summary>
+        public string Contenido { get; set; }
+
+        /// <summary>
+        /// Identificador de la solicitud asociada al comentario.
+        /// </summary>
+        public int IdSolicitud { get; set; }
+
+        /// <summary>
+        /// Identificador del usuario que realizó el comentario.
+        /// </summary>
+        public int IdUsuario { get; set; }
+
+        /// <summary>
+        /// Fecha de creación del comentario.
+        /// </summary>
+        public DateTime Fecha { get; set; }
     }
 }

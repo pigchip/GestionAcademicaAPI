@@ -1,10 +1,13 @@
-﻿using GestionAcademicaAPI.Models;
+﻿using GestionAcademicaAPI.Dtos;
+using GestionAcademicaAPI.Models;
 using GestionAcademicaAPI.Repositories.Interfaces;
 using GestionAcademicaAPI.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestionAcademicaAPI.Services.Implementations
 {
@@ -17,49 +20,70 @@ namespace GestionAcademicaAPI.Services.Implementations
             _propuestaRepository = propuestaRepository;
         }
 
-        public async Task<Propuesta> AddAsync(Propuesta propuesta)
+        public async Task<IEnumerable<PropuestaInfoDto>> GetAllAsync()
         {
-            return await _propuestaRepository.AddAsync(propuesta);
+            var propuestas = await _propuestaRepository.GetAllAsync();
+            return propuestas.Select(p => MapToResponseDto(p)).ToList();
         }
 
-        public async Task<IEnumerable<Propuesta>> GetAllAsync()
+        public async Task<PropuestaInfoDto?> GetByIdAsync(int id)
         {
-            return await _propuestaRepository.GetAllAsync();
+            var propuesta = await _propuestaRepository.GetByIdAsync(id);
+            return propuesta != null ? MapToResponseDto(propuesta) : null;
         }
 
-        public async Task<Propuesta?> GetByIdAsync(int id)
+        public async Task<IEnumerable<PropuestaInfoDto>> FindAsync(Expression<Func<Propuesta, bool>> predicate)
         {
-            return await _propuestaRepository.GetByIdAsync(id);
+            var propuestas = await _propuestaRepository.FindAsync(predicate);
+            return propuestas.Select(p => MapToResponseDto(p)).ToList();
         }
 
-        public async Task<IEnumerable<Propuesta>> FindAsync(Expression<Func<Propuesta, bool>> predicate)
+        public async Task<IEnumerable<PropuestaInfoDto>> GetBySolicitudIdAsync(int idSolicitud)
         {
-            return await _propuestaRepository.FindAsync(predicate);
+            var propuestas = await _propuestaRepository.GetBySolicitudIdAsync(idSolicitud);
+            return propuestas.Select(p => MapToResponseDto(p)).ToList();
         }
 
-        public async Task<IEnumerable<Propuesta>> GetBySolicitudIdAsync(int idSolicitud)
+        public async Task<IEnumerable<PropuestaInfoDto>> GetByEscuelaIdAsync(int idEscuela)
         {
-            return await _propuestaRepository.GetBySolicitudIdAsync(idSolicitud);
+            var propuestas = await _propuestaRepository.GetByEscuelaIdAsync(idEscuela);
+            return propuestas.Select(p => MapToResponseDto(p)).ToList();
         }
 
-        public async Task<IEnumerable<Propuesta>> GetByEscuelaIdAsync(int idEscuela)
+        public async Task<IEnumerable<PropuestaInfoDto>> GetByStatusAsync(string status)
         {
-            return await _propuestaRepository.GetByEscuelaIdAsync(idEscuela);
+            var propuestas = await _propuestaRepository.GetByStatusAsync(status);
+            return propuestas.Select(p => MapToResponseDto(p)).ToList();
         }
 
-        public async Task<IEnumerable<Propuesta>> GetByStatusAsync(string status)
+        public async Task<IEnumerable<PropuestaInfoDto>> GetByDateRangeAsync(DateTime fechaInicio, DateTime fechaFin)
         {
-            return await _propuestaRepository.GetByStatusAsync(status);
+            var propuestas = await _propuestaRepository.GetByDateRangeAsync(fechaInicio, fechaFin);
+            return propuestas.Select(p => MapToResponseDto(p)).ToList();
         }
 
-        public async Task<IEnumerable<Propuesta>> GetByDateRangeAsync(DateTime fechaInicio, DateTime fechaFin)
+        public async Task<PropuestaInfoDto> UpdateAsync(PropuestaUpdateDto propuestaDto)
         {
-            return await _propuestaRepository.GetByDateRangeAsync(fechaInicio, fechaFin);
-        }
+            try
+            {
+                var propuesta = await _propuestaRepository.GetByIdAsync(propuestaDto.IdPropuesta);
+                if (propuesta == null)
+                {
+                    throw new ArgumentException($"La propuesta con ID {propuestaDto.IdPropuesta} no existe.");
+                }
 
-        public async Task UpdateAsync(Propuesta propuesta)
-        {
-            await _propuestaRepository.UpdateAsync(propuesta);
+                propuesta.Status = propuestaDto.Status;
+                await _propuestaRepository.UpdateAsync(propuesta);
+                return MapToResponseDto(propuesta);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new ApplicationException("Error al actualizar la propuesta en la base de datos.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Ocurrió un error al procesar la actualización de la propuesta.", ex);
+            }
         }
 
         public async Task DeleteAsync(int id)
@@ -82,9 +106,33 @@ namespace GestionAcademicaAPI.Services.Implementations
             return await _propuestaRepository.CountByStatusAsync(status);
         }
 
-        public async Task<Propuesta?> GetLastPropuestaBySolicitudAsync(int idSolicitud)
+        public async Task<PropuestaInfoDto?> GetLastPropuestaBySolicitudAsync(int idSolicitud)
         {
-            return await _propuestaRepository.GetLastPropuestaBySolicitudAsync(idSolicitud);
+            var propuesta = await _propuestaRepository.GetLastPropuestaBySolicitudAsync(idSolicitud);
+            return propuesta != null ? MapToResponseDto(propuesta) : null;
+        }
+
+        private PropuestaInfoDto MapToResponseDto(Propuesta propuesta)
+        {
+            return new PropuestaInfoDto
+            {
+                Id = propuesta.Id,
+                IdSolicitud = propuesta.IdSolicitud,
+                NombreEscuela = propuesta.Escuela?.Nombre ?? "Desconocida",
+                Status = propuesta.Status,
+                Fecha = propuesta.Fecha,
+                Materias = new MateriasPropuestaList
+                {
+                    Values = propuesta.Materias.Select(m => new MateriaInfoDto
+                    {
+                        Id = m.Id,
+                        NombreMateriaEscom = m.NombreMateriaEscom,
+                        NombreMateriaForanea = m.NombreMateriaForanea,
+                        TemarioMateriaForaneaUrl = m.TemarioMateriaForaneaUrl,
+                        Status = m.Status
+                    }).ToList()
+                }
+            };
         }
     }
 }

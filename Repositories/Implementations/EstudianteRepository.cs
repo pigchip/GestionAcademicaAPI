@@ -183,5 +183,39 @@ namespace GestionAcademicaAPI.Repositories.Implementations
             _context.Set<Estudiante>().Remove(estudiante);
             await _context.SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Verifica si existe un estudiante con el correo electrónico personal proporcionado
+        /// </summary>
+        /// <param name="correoElectronico">Correo electrónico personal</param>
+        /// <param name="idExcluir">Identificador del estudiante a excluir de la verificación</param>
+        /// <returns>True si existe, False en caso contrario</returns>
+        public async Task<bool> ExisteCorreoElectronicoPersonalAsync(string correoElectronico, int? idExcluir = null)
+        {
+            return await _context.Set<Estudiante>()
+                .AnyAsync(u => u.EmailEscolar == correoElectronico && (!idExcluir.HasValue || u.Id != idExcluir.Value));
+        }
+
+        /// <summary>
+        /// Obtiene todos los estudiantes incluyendo todos sus datos relacionados
+        /// </summary>
+        /// <returns>IEnumerable de estudiantes con todas sus entidades relacionadas</returns>
+        public async Task<IEnumerable<Estudiante>> GetAllWithDetailsAsync()
+        {
+            return await _context.Set<Estudiante>()
+                .Include(e => e.Usuario)
+                .Include(e => e.Solicitudes)
+                    .ThenInclude(s => s.Propuestas)
+                        .ThenInclude(p => p.Escuela)
+                .Include(e => e.Solicitudes)
+                    .ThenInclude(s => s.Propuestas)
+                        .ThenInclude(p => p.Materias)
+                .Include(e => e.Solicitudes)
+                    .ThenInclude(s => s.Comentarios)
+                        .ThenInclude(c => c.Usuario)
+                .Include(e => e.Materias)
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }
