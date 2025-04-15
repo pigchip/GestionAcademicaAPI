@@ -441,7 +441,7 @@ namespace GestionAcademicaAPI.Repositories.Implementations
                 .Replace("{{correoElectronico}}", usuario.EmailPersonal)
                 .Replace("{{fechaActual}}", DateTime.Now.ToString("dd/MM/yyyy"));
 
-            string baseUrl = _configuration["Application:BaseUrl"] ?? "https://gestionacademica.com";
+            string baseUrl = _configuration["Application:BaseUrl"] ?? "https://www.escom.ipn.mx/SSEIS/dist/";
             resultado = resultado.Replace("{{baseUrl}}", baseUrl);
 
             if (parametrosAdicionales != null)
