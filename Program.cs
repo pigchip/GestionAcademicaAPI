@@ -16,6 +16,19 @@ builder.WebHost.UseUrls("http://0.0.0.0:5001", "https://0.0.0.0:8000");
 // Cargar variables de entorno desde el archivo .env
 Env.Load();
 
+// Configure CORS properly
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://www.escom.ipn.mx")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
+
 // Agregar controladores al contenedor de servicios (para Web API)
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -84,27 +97,12 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GestionAcademiaAPI v1"));
 app.UseDeveloperExceptionPage();
+
+// Use the built-in CORS middleware
+app.UseCors();
+
 app.UseRouting();
-
-// Custom CORS middleware
-app.Use(async (context, next) =>
-{
-    context.Response.Headers.Add("Access-Control-Allow-Origin", context.Request.Headers["Origin"]);
-    context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-    context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-    if (context.Request.Method == "OPTIONS")
-    {
-        context.Response.StatusCode = 204;
-        return;
-    }
-
-    await next();
-});
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
